@@ -1,0 +1,4 @@
+{
+  "title": "Trigger light based on sensors",
+  "description": "Turn on/off lights based on luminosity and binary sensors",
+}

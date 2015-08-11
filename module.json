@@ -1,0 +1,114 @@
+{
+    "dependencies": [],
+    "singleton": true,
+    "category": "automation",
+    "author": "Maroš Kollár",
+    "homepage": "http://k-1.com",
+    "icon": "icon.png",
+    "version": "1.0.0",
+    "maturity": "stable",
+    "repository": {
+        "type": "git",
+        "source": "https://github.com/maros/Zway-LightMovement"
+    },
+    "defaults": {
+        "title": "Send stats",
+        "description": "Controll most aspects of my home",
+        "duration": 5,
+        "solarAltitude": -5,
+        "luminosity": 5
+    },
+    "schema": {
+        "type": "object",
+        "properties": {
+            "lights": {
+                "type": "array",
+                "items": {
+                    "field": "enum",
+                    "datasource": "namespaces",
+                    "enum": "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
+                    "required": true
+                }
+            },
+            "movementSensors": {
+                "type": "array",
+                "items": {
+                    "field": "enum",
+                    "datasource": "namespaces",
+                    "enum": "namespaces:devices_sensorBinary:deviceName",
+                    "required": true
+                }
+            },
+            "luminositySensors": {
+                "type": "array",
+                "items": {
+                    "field": "enum",
+                    "datasource": "namespaces",
+                    "enum": "namespaces:devices_sensorMultilevel:deviceName"
+                }
+            },
+            "solarAltitude": {
+                "type": "number",
+                "required": true
+            },
+            "luminosity": {
+                "type": "number",
+                "required": true
+            },
+            "duration": {
+                "type": "number",
+                "required": true
+            }
+        },
+        "required": true
+    },
+    "options": {
+        "fields": {
+            "lights": {
+                "label": "__lights_label__",
+                "fields": {
+                    "item": {
+                        "type": "select",
+                        "datasource": "namespaces",
+                        "field": "devices",
+                        "optionLabels": "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName"
+                    }
+                }
+            },
+            "movementSensors": {
+                "label": "__movement_sensors_label__",
+                "fields": {
+                    "item": {
+                        "type": "select",
+                        "datasource": "namespaces",
+                        "field": "devices",
+                        "optionLabels": "namespaces:devices_sensorBinary:deviceName"
+                    }
+                }
+            },
+            "luminositySensors": {
+                "label": "__luminosity_sensors_label__",
+                "fields": {
+                    "item": {
+                        "type": "select",
+                        "datasource": "namespaces",
+                        "field": "devices",
+                        "optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+                    }
+                }
+            },
+            "solarAltitude": {
+                "label": "__solar_altitude_label__",
+                "helper": "__solar_altitude_helper__"
+            },
+            "luminosity": {
+                "label": "__luminosity_label__",
+                "helper": "__luminosity_helper__"
+            },
+            "duration": {
+                "label": "__duration_label__",
+                "helper": "__duration_helper__"
+            }
+        }
+    }
+}
