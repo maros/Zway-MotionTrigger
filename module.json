@@ -6,14 +6,15 @@
     "homepage": "http://k-1.com",
     "icon": "icon.png",
     "version": "1.0.0",
+    "moduleName": "LightMovement",
     "maturity": "stable",
     "repository": {
         "type": "git",
         "source": "https://github.com/maros/Zway-LightMovement"
     },
     "defaults": {
-        "title": "Send stats",
-        "description": "Controll most aspects of my home",
+        "title": "__title__",
+        "description": "__description__",
         "duration": 5,
         "solarAltitude": -5,
         "luminosity": 5
@@ -26,34 +27,35 @@
                 "items": {
                     "field": "enum",
                     "datasource": "namespaces",
-                    "enum": "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
+                    "enum": "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
                     "required": true
                 }
             },
-            "movementSensors": {
+            "extraLights": {
                 "type": "array",
                 "items": {
                     "field": "enum",
                     "datasource": "namespaces",
-                    "enum": "namespaces:devices_sensorBinary:deviceName",
-                    "required": true
+                    "enum": "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId"
                 }
             },
-            "luminositySensors": {
+            "securitySensors": {
                 "type": "array",
                 "items": {
                     "field": "enum",
                     "datasource": "namespaces",
-                    "enum": "namespaces:devices_sensorMultilevel:deviceName"
+                    "enum": "namespaces:devices_sensorBinary:deviceId",
+                    "required": true
                 }
             },
-            "solarAltitude": {
-                "type": "number",
-                "required": true
+            "luminositySensor": {
+                "field": "enum",
+                "datasource": "namespaces",
+                "enum": "namespaces:devices_sensorMultilevel:deviceId",
+                "required": false
             },
             "luminosity": {
-                "type": "number",
-                "required": true
+                "type": "number"
             },
             "duration": {
                 "type": "number",
@@ -75,8 +77,20 @@
                     }
                 }
             },
-            "movementSensors": {
-                "label": "__movement_sensors_label__",
+            "extraLights": {
+                "label": "__extra_lights_label__",
+                "helper": "__extra_lights_helper__",
+                "fields": {
+                    "item": {
+                        "type": "select",
+                        "datasource": "namespaces",
+                        "field": "devices",
+                        "optionLabels": "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName"
+                    }
+                }
+            },
+            "securitySensors": {
+                "label": "__security_sensors_label__",
                 "fields": {
                     "item": {
                         "type": "select",
@@ -86,20 +100,12 @@
                     }
                 }
             },
-            "luminositySensors": {
-                "label": "__luminosity_sensors_label__",
-                "fields": {
-                    "item": {
-                        "type": "select",
-                        "datasource": "namespaces",
-                        "field": "devices",
-                        "optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
-                    }
-                }
-            },
-            "solarAltitude": {
-                "label": "__solar_altitude_label__",
-                "helper": "__solar_altitude_helper__"
+            "luminositySensor": {
+                "label": "__luminosity_sensor_label__",
+                "type": "select",
+                "datasource": "namespaces",
+                "field": "devices",
+                "optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
             },
             "luminosity": {
                 "label": "__luminosity_label__",
