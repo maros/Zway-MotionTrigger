@@ -69,8 +69,6 @@ LightMotion.prototype.initCallback = function() {
         var device  = self.controller.devices.get(deviceId);
         var callback = _.bind(self.triggerSensor,self);
         self.callbacks[deviceId] = callback;
-        console.log('>>>>> INIT'+deviceId);
-        
         device.on('change:metrics:level',callback);
     });
 };
@@ -98,9 +96,6 @@ LightMotion.prototype.stop = function() {
 LightMotion.prototype.triggerSensor = function(sensor) {
     var self = this;
     
-    console.log('>>>>> GOT CALLBACK');
-    console.logJS(sensor);
-    
     // Check trigger device on
     if (self.vDev.get('metrics:level') !== 'on') {
         return;
@@ -118,8 +113,6 @@ LightMotion.prototype.triggerSensor = function(sensor) {
             sensors = true;
         }
     });
-    
-    console.log("Sensors"+sensors);
     
     // Triggered sensor
     if (sensors === true) {
@@ -156,13 +149,11 @@ LightMotion.prototype.triggerSensor = function(sensor) {
         
         // Trigger light
         if (luminosity === true && lights === false) {
-            console.log('TRIGGER');
             self.switchDevices(true);
         }
     // Untriggered sensor
     } else if (sensors === false) {
         if (self.triggered === true) {
-            console.log('UNTRIGGER');
             if (self.config.duration > 0) {
                 self.timeout = setTimeout(
                     _.bind(self.switchDevices,self,false),
@@ -186,7 +177,6 @@ LightMotion.prototype.switchDevices = function(mode) {
     }
     self.resetTimeout();
     self.triggered = mode;
-    
     
     _.each(self.config.lights,function(deviceId) {
         var device = self.controller.devices.get(deviceId);
