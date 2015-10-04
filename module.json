@@ -6,17 +6,16 @@
     "homepage": "http://k-1.com",
     "icon": "icon.png",
     "version": "1.0.0",
-    "moduleName": "LightMovement",
+    "moduleName": "LightMotion",
     "maturity": "stable",
     "repository": {
         "type": "git",
-        "source": "https://github.com/maros/Zway-LightMovement"
+        "source": "https://github.com/maros/Zway-LightMotion"
     },
     "defaults": {
         "title": "__title__",
         "description": "__description__",
-        "duration": 5,
-        "solarAltitude": -5,
+        "duration": 180,
         "luminosity": 5
     },
     "schema": {
