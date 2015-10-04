@@ -1,4 +1,13 @@
 {
-  "title": "Trigger light based on sensors",
-  "description": "Turn on/off lights based on luminosity and binary sensors",
+    "title":"Trigger lights with security sensors",
+    "description":"Trigger lights based on luminosity and binary sensors",
+    "duration_label":"Trigger duration (seconds)",
+    "duration_helper":"Trigger delay after sensor was untripped",
+    "luminosity_label":"Luminosity threshid",
+    "luminosity_sensor_label":"Luminosity sensor",
+    "luminosity_helper":"Optional luminosity sensor. Will only trigger if luminosity is below threshold.",
+    "lights_label":"Tigger lights",
+    "extra_lights_label":"Extra Lights",
+    "extra_lights_helper":"Extra lights to check before triggering light",
+    "security_sensors_label":"Security Sensors"
 }
