@@ -1,6 +1,9 @@
 # Zway-LightMotion
 
-Trigger lights with motion and other security sensors
+Trigger lights based on luminosity and security sensors like motion or door
+sensors. Lets you specify multiple devices to trigger and check and a delay 
+for turning off lights. This module will ensure that devices are not triggered
+if any of the selected devices is already turned on.
 
 # Configuration
 
@@ -32,7 +35,7 @@ Trigger duration after the last security sensor has been untripped.
 
 # Virtual Devices
 
-This module creates a virtual binary switch device to turn on/off random devices.
+This module creates a virtual binary switch device to turn on/off the trigger.
 
 # Events
 

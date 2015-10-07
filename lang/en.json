@@ -1,6 +1,6 @@
 {
     "title":"Trigger lights with security sensors",
-    "description":"Trigger lights based on luminosity and binary sensors",
+    "description":"Trigger lights based on luminosity and security sensors like motion or door sensors. Lets you specify multiple devices to trigger and check and a delay for turning off lights.",
     "duration_label":"Trigger duration (seconds)",
     "duration_helper":"Trigger delay after sensor was untripped",
     "luminosity_label":"Luminosity threshid",
