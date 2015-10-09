@@ -190,6 +190,7 @@ LightMotion.prototype.switchDevices = function(mode) {
             console.error('Unspported device type '+device.get('deviceType'));
             return;
         }
+        deviceObject.set('metrics:auto',mode);
     });
 };
 
