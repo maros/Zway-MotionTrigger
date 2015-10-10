@@ -76,7 +76,6 @@ LightMotion.prototype.initCallback = function() {
 
 LightMotion.prototype.stop = function() {
     var self = this;
-    LightMotion.super_.prototype.stop.call(this);
     
     _.each(self.callbacks,function(callback) {
         device.off('change:metrics:level',callback);
@@ -88,6 +87,7 @@ LightMotion.prototype.stop = function() {
         self.controller.devices.remove(self.vDev.id);
         self.vDev = null;
     }
+    LightMotion.super_.prototype.stop.call(this);
 };
 
 // ----------------------------------------------------------------------------
