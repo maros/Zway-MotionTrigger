@@ -68,9 +68,11 @@ LightMotion.prototype.initCallback = function() {
     
     _.each(self.config.securitySensors,function(deviceId) {
         var device  = self.controller.devices.get(deviceId);
-        var callback = _.bind(self.triggerSensor,self);
-        self.callbacks[deviceId] = callback;
-        device.on('change:metrics:level',callback);
+        if (typeof(device) !== 'null') {
+            var callback = _.bind(self.triggerSensor,self);
+            self.callbacks[deviceId] = callback;
+            device.on('change:metrics:level',callback);
+        }
     });
 };
 
