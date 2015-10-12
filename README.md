@@ -9,7 +9,7 @@ if any of the selected devices is already turned on.
 
 ## lights
 
-Multiple devices that should be triggered. Trigger will not be fired when any 
+Multiple devices that should be triggered. Trigger will not be fired if any 
 of these devices is already turned on.
 
 ## extraLights
@@ -27,7 +27,7 @@ Optional luminosity sensor.
 
 ## luminosity
 
-Only triggers if luminosity is above threshold.
+Only triggers if luminosity is below threshold.
 
 ## duration
 
@@ -36,6 +36,7 @@ Trigger duration after the last security sensor has been untripped.
 # Virtual Devices
 
 This module creates a virtual binary switch device to turn on/off the trigger.
+Current operation mode (triggered, on, off) is indicated by the icon color.
 
 # Events
 
