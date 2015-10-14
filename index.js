@@ -56,7 +56,7 @@ LightMotion.prototype.init = function (config) {
         moduleId: this.id
     });
     
-    this.timeout = null;
+    this.timeout = undefined;
     this.triggered = false;
     
     setTimeout(_.bind(self.initCallback,self),10000);
@@ -68,7 +68,7 @@ LightMotion.prototype.initCallback = function() {
     
     _.each(self.config.securitySensors,function(deviceId) {
         var device  = self.controller.devices.get(deviceId);
-        if (typeof(device) !== 'null') {
+        if (typeof(device) !== 'undefined') {
             var callback = _.bind(self.triggerSensor,self);
             self.callbacks[deviceId] = callback;
             device.on('change:metrics:level',callback);
@@ -87,7 +87,7 @@ LightMotion.prototype.stop = function() {
     
     if (self.vDev) {
         self.controller.devices.remove(self.vDev.id);
-        self.vDev = null;
+        self.vDev = undefined;
     }
     LightMotion.super_.prototype.stop.call(this);
 };
@@ -199,9 +199,9 @@ LightMotion.prototype.switchDevices = function(mode) {
 LightMotion.prototype.resetTimeout = function() {
     var self = this;
     
-    if (typeof self.timeout !== 'null') {
+    if (typeof(self.timeout) !== 'undefined') {
         clearTimeout(self.timeout);
-        self.timeout = null;
+        self.timeout = undefined;
     }
 };
  
