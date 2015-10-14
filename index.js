@@ -32,8 +32,8 @@ LightMotion.prototype.init = function (config) {
     this.vDev = this.controller.devices.create({
         deviceId: "LightMotion_" + this.id,
         defaults: {
-            deviceType: 'switchBinary',
             metrics: {
+                probeTitle: 'controller',
                 level: 'off',
                 title: langFile.title,
                 icon: "/ZAutomation/api/v1/load/modulemedia/LightMotion/icon_off.png"
