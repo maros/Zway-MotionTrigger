@@ -140,18 +140,18 @@ MotionTrigger.prototype.triggerSensor = function(sensor) {
             });
         });
         
-        // Check luminosity
-        var luminosity = true;
-        if (self.config.luminositySensor) {
-            var device = self.controller.devices.get(self.config.luminositySensor);
+        // Check extra sesnors
+        var check = true;
+        _.each(self.config.preconditions,function(element) {
+            var device = self.controller.devices.get(element.device);
             var level = device.get("metrics:level");
-            if (level > self.luminosity) {
-                luminosity = false;
+            if (! self.op(level,element.testOperator,element.testValue)) {
+                check = false;
             }
-        }
+        });
         
         // Trigger light
-        if (luminosity === true && lights === false) {
+        if (check === true && lights === false) {
             self.switchDevices(true);
         }
     // Untriggered sensor
@@ -204,4 +204,23 @@ MotionTrigger.prototype.resetTimeout = function() {
         self.timeout = undefined;
     }
 };
+
+MotionTrigger.prototype.op = function (dval, op, val) {
+    if (op === "=") {
+        return dval === val;
+    } else if (op === "!=") {
+        return dval !== val;
+    } else if (op === ">") {
+        return dval > val;
+    } else if (op === "<") {
+        return dval < val;
+    } else if (op === ">=") {
+        return dval >= val;
+    } else if (op === "<=") {
+        return dval <= val;
+    }
+        
+    return null; // error!!  
+};
+
  

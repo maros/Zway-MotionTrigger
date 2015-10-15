@@ -47,16 +47,29 @@
                     "required": true
                 }
             },
-            "luminositySensor": {
-                "field": "enum",
-                "datasource": "namespaces",
-                "enum": "namespaces:devices_sensorMultilevel:deviceId",
-                "required": false
-            },
-            "luminosity": {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 1000
+            "preconditions": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": true,
+                    "properties": {
+                        "device": {
+                            "field": "enum",
+                            "datasource": "namespaces",
+                            "enum": "namespaces:devices_sensorBinary:deviceId",
+                            "required": true
+                        },
+                        "testOperator": {
+                            "type": "string",
+                            "enum": ["=", "!=", ">", ">=", "<", "<="],
+                            "required": true
+                        },
+                        "testValue": {
+                            "type": "number",
+                            "required": true
+                        }
+                    }
+                }
             },
             "duration": {
                 "type": "integer",
@@ -102,16 +115,22 @@
                     }
                 }
             },
-            "luminositySensor": {
-                "label": "__luminosity_sensor_label__",
-                "type": "select",
-                "datasource": "namespaces",
-                "field": "devices",
-                "optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
-            },
-            "luminosity": {
-                "label": "__luminosity_label__",
-                "helper": "__luminosity_helper__"
+            "preconditions": {
+                "label": "__preconditions_label__",
+                "label": "__preconditions_helper__",
+                "fields": {
+                    "device": {
+                        "label": "",
+                        "type": "select",
+                        "datasource": "namespaces",
+                        "field": "optionLabels",
+                        "optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
+                    },
+                    "testOperator": {
+                        "type": "select",
+                        "optionLabels": ["=", "≠", ">", "≥", "<", "≤"]
+                    }
+                }
             },
             "duration": {
                 "label": "__duration_label__",
