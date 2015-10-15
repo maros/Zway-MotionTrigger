@@ -1,4 +1,4 @@
-/*** LightMotion Z-Way HA module *******************************************
+/*** MotionTrigger Z-Way HA module *******************************************
 
 Version: 1.0.0
 (c) Maroš Kollár, 2015
@@ -9,34 +9,34 @@ Description:
 
 ******************************************************************************/
 
-function LightMotion (id, controller) {
+function MotionTrigger (id, controller) {
     // Call superconstructor first (AutomationModule)
-    LightMotion.super_.call(this, id, controller);
+    MotionTrigger.super_.call(this, id, controller);
 }
 
-inherits(LightMotion, AutomationModule);
+inherits(MotionTrigger, AutomationModule);
 
-_module = LightMotion;
+_module = MotionTrigger;
 
 // ----------------------------------------------------------------------------
 // --- Module instance initialized
 // ----------------------------------------------------------------------------
 
-LightMotion.prototype.init = function (config) {
-    LightMotion.super_.prototype.init.call(this, config);
+MotionTrigger.prototype.init = function (config) {
+    MotionTrigger.super_.prototype.init.call(this, config);
     var self = this;
     
-    var langFile = self.controller.loadModuleLang("LightMotion");
+    var langFile = self.controller.loadModuleLang("MotionTrigger");
     
     // Create vdev
     this.vDev = this.controller.devices.create({
-        deviceId: "LightMotion_" + this.id,
+        deviceId: "MotionTrigger_" + this.id,
         defaults: {
             metrics: {
                 probeTitle: 'controller',
                 level: 'off',
                 title: langFile.title,
-                icon: "/ZAutomation/api/v1/load/modulemedia/LightMotion/icon_off.png"
+                icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png"
             }
         },
         overlay: {
@@ -51,7 +51,7 @@ LightMotion.prototype.init = function (config) {
                 self.triggered = false;
             }
             this.set("metrics:level", command);
-            this.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/LightMotion/icon_"+command+".png");
+            this.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+command+".png");
         },
         moduleId: this.id
     });
@@ -62,7 +62,7 @@ LightMotion.prototype.init = function (config) {
     setTimeout(_.bind(self.initCallback,self),10000);
 };
 
-LightMotion.prototype.initCallback = function() {
+MotionTrigger.prototype.initCallback = function() {
     var self = this;
     self.callbacks = [];
     
@@ -76,7 +76,7 @@ LightMotion.prototype.initCallback = function() {
     });
 };
 
-LightMotion.prototype.stop = function() {
+MotionTrigger.prototype.stop = function() {
     var self = this;
     
     _.each(self.callbacks,function(callback) {
@@ -89,14 +89,14 @@ LightMotion.prototype.stop = function() {
         self.controller.devices.remove(self.vDev.id);
         self.vDev = undefined;
     }
-    LightMotion.super_.prototype.stop.call(this);
+    MotionTrigger.super_.prototype.stop.call(this);
 };
 
 // ----------------------------------------------------------------------------
 // --- Module methods
 // ----------------------------------------------------------------------------
 
-LightMotion.prototype.triggerSensor = function(sensor) {
+MotionTrigger.prototype.triggerSensor = function(sensor) {
     var self = this;
     
     // Check trigger device on
@@ -169,14 +169,14 @@ LightMotion.prototype.triggerSensor = function(sensor) {
     }
 };
 
-LightMotion.prototype.switchDevices = function(mode) {
+MotionTrigger.prototype.switchDevices = function(mode) {
     var self = this;
     
     var state = self.vDev.get('metrics:level');
     if (state === 'on' && mode === true) {
-        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/LightMotion/icon_triggered.png");
+        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
     } else {
-        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/LightMotion/icon_"+state+".png");
+        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+state+".png");
     }
     self.resetTimeout();
     self.triggered = mode;
@@ -196,7 +196,7 @@ LightMotion.prototype.switchDevices = function(mode) {
     });
 };
 
-LightMotion.prototype.resetTimeout = function() {
+MotionTrigger.prototype.resetTimeout = function() {
     var self = this;
     
     if (typeof(self.timeout) !== 'undefined') {

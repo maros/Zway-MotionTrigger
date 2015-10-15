@@ -1,4 +1,4 @@
-# Zway-LightMotion
+# Zway-MotionTrigger
 
 Trigger lights based on luminosity and security sensors like motion or door
 sensors. Lets you specify multiple devices to trigger and check and a delay 
