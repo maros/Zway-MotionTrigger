@@ -1,8 +1,9 @@
 # Zway-MotionTrigger
 
-Trigger lights based on luminosity and security sensors like motion or door
-sensors. Lets you specify multiple devices to trigger and check and a delay 
-for turning off lights. This module will ensure that devices are not triggered
+Trigger switches based on security sensors like motion or door sensors if certain
+preconditions are met (eg. luminosity below a certain level). Lets you specify 
+multiple devices to trigger and check, a delay for turning off lights and multiple
+preconditions to check. This module will ensure that devices are not triggered
 if any of the selected devices is already turned on.
 
 # Configuration
@@ -21,13 +22,21 @@ these devices is already turned on.
 
 Security sensors that trigger lights
 
-## luminositySensor
+## preconditions
 
-Optional luminosity sensor.
+Multiple optional conditions to check before a switch will be triggered.
 
-## luminosity
+## preconditions.device
 
-Only triggers if luminosity is below threshold.
+Device to check. Must be a multilevel sensor.
+
+## preconditions.testOperator
+
+Operator to be used for the check
+
+## preconditions.testValue
+
+Value to be used for the check
 
 ## duration
 
