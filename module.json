@@ -15,8 +15,7 @@
     "defaults": {
         "title": "__title__",
         "description": "__description__",
-        "duration": 180,
-        "luminosity": 5
+        "duration": 180
     },
     "schema": {
         "type": "object",
@@ -56,7 +55,7 @@
                         "device": {
                             "field": "enum",
                             "datasource": "namespaces",
-                            "enum": "namespaces:devices_sensorBinary:deviceId",
+                            "enum": "namespaces:devices_sensorMultilevel:deviceId",
                             "required": true
                         },
                         "testOperator": {
@@ -117,7 +116,7 @@
             },
             "preconditions": {
                 "label": "__preconditions_label__",
-                "label": "__preconditions_helper__",
+                "helper": "__preconditions_helper__",
                 "fields": {
                     "device": {
                         "label": "",
