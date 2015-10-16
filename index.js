@@ -117,6 +117,7 @@ MotionTrigger.prototype.triggerSensor = function(sensor) {
         }
     });
     
+    
     // Triggered sensor
     if (sensors === true) {
         // Check trigger lights on
@@ -134,13 +135,13 @@ MotionTrigger.prototype.triggerSensor = function(sensor) {
                         lights = true;
                     }
                 } else {
-                    console.error('Unspported device type '+device.get('deviceType'));
+                    console.error('[MotionTrigger] Unspported device type '+device.get('deviceType'));
                     return;
                 }
             });
         });
         
-        // Check extra sesnors
+        // Check extra sensors
         var check = true;
         _.each(self.config.preconditions,function(element) {
             var device = self.controller.devices.get(element.device);
@@ -149,6 +150,8 @@ MotionTrigger.prototype.triggerSensor = function(sensor) {
                 check = false;
             }
         });
+        
+        console.log('[MotionTrigger] Triggered security sensor (preconditions: '+check+', running: '+lights+')');
         
         // Trigger light
         if (check === true && lights === false) {
@@ -180,6 +183,8 @@ MotionTrigger.prototype.switchDevices = function(mode) {
     }
     self.resetTimeout();
     self.triggered = mode;
+    
+    console.log('[MotionTrigger] Turining '+(mode ? 'on':'off'));
     
     _.each(self.config.lights,function(deviceId) {
         var device = self.controller.devices.get(deviceId);
