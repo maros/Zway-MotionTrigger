@@ -1,10 +1,10 @@
 # Zway-MotionTrigger
 
-Trigger switches based on security sensors like motion or door sensors if certain
-preconditions are met (eg. luminosity below a certain level). Lets you specify 
-multiple devices to trigger and check, a delay for turning off lights and multiple
-preconditions to check. This module will ensure that devices are not triggered
-if any of the selected devices is already turned on.
+Trigger switches based on security sensors like motion or door sensors if 
+certain preconditions are met (eg. luminosity below a certain level). Lets you 
+specify  multiple devices to trigger and check, a delay for turning off lights 
+and multiple preconditions to check. This module will ensure that devices are 
+not triggered if any of the selected devices is already turned on.
 
 # Configuration
 
@@ -15,7 +15,7 @@ of these devices is already turned on.
 
 ## extraLights
 
-Extra devices that should be checked. Trigger will not be fired when any of
+Extra devices that should be checked. Trigger will not be fired if any of
 these devices is already turned on.
 
 ## securitySensors
@@ -46,6 +46,8 @@ Trigger duration after the last security sensor has been untripped.
 
 This module creates a virtual binary switch device to turn on/off the trigger.
 Current operation mode (triggered, on, off) is indicated by the icon color.
+metrics:level stores the mode of the trigger, and metrics:triggered weather
+a device is currently triggered or not.
 
 # Events
 
