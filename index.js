@@ -1,6 +1,6 @@
 /*** MotionTrigger Z-Way HA module *******************************************
 
-Version: 1.0.0
+Version: 1.00
 (c) Maroš Kollár, 2015
 -----------------------------------------------------------------------------
 Author: maros@k-1.com <maros@k-1.com>
@@ -36,7 +36,8 @@ MotionTrigger.prototype.init = function (config) {
                 probeTitle: 'controller',
                 level: 'off',
                 title: langFile.title,
-                icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png"
+                icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png",
+                triggered: false
             }
         },
         overlay: {
@@ -48,7 +49,7 @@ MotionTrigger.prototype.init = function (config) {
                 return;
             }
             if (command === 'off') {
-                self.triggered = false;
+                this.set("metrics:triggered", false);
             }
             this.set("metrics:level", command);
             this.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+command+".png");
@@ -57,7 +58,6 @@ MotionTrigger.prototype.init = function (config) {
     });
     
     this.timeout = undefined;
-    this.triggered = false;
     
     setTimeout(_.bind(self.initCallback,self),10000);
 };
@@ -159,7 +159,7 @@ MotionTrigger.prototype.triggerSensor = function(sensor) {
         }
     // Untriggered sensor
     } else if (sensors === false) {
-        if (self.triggered === true) {
+        if (self.vDev.get("metrics:triggered") === true) {
             if (self.config.duration > 0) {
                 self.timeout = setTimeout(
                     _.bind(self.switchDevices,self,false),
@@ -182,7 +182,7 @@ MotionTrigger.prototype.switchDevices = function(mode) {
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+state+".png");
     }
     self.resetTimeout();
-    self.triggered = mode;
+    self.vDev.set("metrics:triggered",mode);
     
     console.log('[MotionTrigger] Turining '+(mode ? 'on':'off'));
     
