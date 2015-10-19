@@ -12,6 +12,9 @@ Description:
 function MotionTrigger (id, controller) {
     // Call superconstructor first (AutomationModule)
     MotionTrigger.super_.call(this, id, controller);
+    
+    this.timeout    = undefined;
+    this.callback   = undefined;
 }
 
 inherits(MotionTrigger, AutomationModule);
@@ -57,21 +60,17 @@ MotionTrigger.prototype.init = function (config) {
         moduleId: this.id
     });
     
-    this.timeout = undefined;
-    
+    self.callback = _.bind(self.triggerSensor,self);
     setTimeout(_.bind(self.initCallback,self),10000);
 };
 
 MotionTrigger.prototype.initCallback = function() {
     var self = this;
-    self.callbacks = [];
     
     _.each(self.config.securitySensors,function(deviceId) {
         var device  = self.controller.devices.get(deviceId);
         if (typeof(device) !== 'undefined') {
-            var callback = _.bind(self.triggerSensor,self);
-            self.callbacks[deviceId] = callback;
-            device.on('change:metrics:level',callback);
+            device.on('change:metrics:level',self.callback);
         }
     });
 };
@@ -79,9 +78,12 @@ MotionTrigger.prototype.initCallback = function() {
 MotionTrigger.prototype.stop = function() {
     var self = this;
     
-    _.each(self.callbacks,function(callback) {
-        device.off('change:metrics:level',callback);
+    _.each(self.config.securitySensors,function(deviceId) {
+        var device  = self.controller.devices.get(deviceId);
+        deviceId.off('change:metrics:level',self.callback);
     });
+    
+    self.callback = undefined;
     
     self.resetTimeout();
     
@@ -154,13 +156,17 @@ MotionTrigger.prototype.triggerSensor = function(sensor) {
         console.log('[MotionTrigger] Triggered security sensor (preconditions: '+check+', running: '+lights+')');
         
         // Trigger light
-        if (check === true && lights === false) {
-            self.switchDevices(true);
+        if (check === true) {
+            self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
+            if (lights === false) {
+                self.switchDevices(true);
+            }
         }
     // Untriggered sensor
     } else if (sensors === false) {
         if (self.vDev.get("metrics:triggered") === true) {
             if (self.config.duration > 0) {
+                self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
                 self.timeout = setTimeout(
                     _.bind(self.switchDevices,self,false),
                     (parseInt(self.config.duration) * 1000)
@@ -197,7 +203,7 @@ MotionTrigger.prototype.switchDevices = function(mode) {
             console.error('Unspported device type '+device.get('deviceType'));
             return;
         }
-        deviceObject.set('metrics:auto',mode);
+        device.set('metrics:auto',mode);
     });
 };
 
