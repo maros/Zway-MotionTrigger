@@ -69,7 +69,9 @@ MotionTrigger.prototype.initCallback = function() {
     
     _.each(self.config.securitySensors,function(deviceId) {
         var device  = self.controller.devices.get(deviceId);
-        if (typeof(device) !== 'undefined') {
+        if (device == 'null') {
+            console.error('[MotionTrigger] Device not found '+deviceId);
+        } else {
             device.on('change:metrics:level',self.callback);
         }
     });
@@ -80,7 +82,9 @@ MotionTrigger.prototype.stop = function() {
     
     _.each(self.config.securitySensors,function(deviceId) {
         var device  = self.controller.devices.get(deviceId);
-        deviceId.off('change:metrics:level',self.callback);
+        if (device != 'null') {
+            deviceId.off('change:metrics:level',self.callback);
+        }
     });
     
     self.callback = undefined;
