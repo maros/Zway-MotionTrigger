@@ -15,7 +15,8 @@
     "defaults": {
         "title": "__title__",
         "description": "__description__",
-        "duration": 180
+        "timeout": 180,
+        "recheckPreconditions": false
     },
     "schema": {
         "type": "object",
@@ -70,10 +71,14 @@
                     }
                 }
             },
-            "duration": {
+            "timeout": {
                 "type": "integer",
                 "required": true,
                 "minimum": 1
+            },
+            "recheckPreconditions": {
+                "type": "boolean",
+                "required": true
             }
         },
         "required": true
@@ -131,9 +136,13 @@
                     }
                 }
             },
-            "duration": {
-                "label": "__duration_label__",
-                "helper": "__duration_helper__"
+            "timeout": {
+                "label": "__timeout_label__",
+                "helper": "__timeout_helper__"
+            },
+            "recheckPreconditions": {
+                "label": "__recheck_preconditions_label__",
+                "helper": "__recheck_preconditions_helper__"
             }
         }
     }

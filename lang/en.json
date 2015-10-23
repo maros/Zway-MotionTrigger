@@ -1,12 +1,15 @@
 {
    "description" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.",
-   "duration_helper" : "Keep triggered delay after sensor was untripped",
-   "duration_label" : "Trigger duration (seconds)",
+   "timeout_helper" : "Keep triggered delay after sensor was untripped",
+   "timeout_label" : "Trigger timeout (seconds)",
    "extra_lights_helper" : "Extra lights to check before triggering light. If one of the selected devices is already on, lights will not be triggered.",
    "extra_lights_label" : "Extra Lights",
    "lights_label" : "Tigger lights",
    "preconditions_helper" : "Multiple checks can be added to check preconditions before triggering. Will only trigger if all conditions are met.",
    "preconditions_label" : "Preconditions to check before triggering",
    "security_sensors_label" : "Security Sensors",
-   "title" : "Smart light triggers"
+   "title" : "Smart light triggers",
+   "recheck_preconditions_label": "Regularly re-check preconditions",
+   "recheck_preconditions_helper": "Check preconditions regularly (Enable) or only once upon triggering the device (Disable)"
+   
 }

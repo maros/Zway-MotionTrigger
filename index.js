@@ -15,6 +15,7 @@ function MotionTrigger (id, controller) {
     
     this.timeout    = undefined;
     this.callback   = undefined;
+    this.interval   = undefined;
 }
 
 inherits(MotionTrigger, AutomationModule);
@@ -51,11 +52,16 @@ MotionTrigger.prototype.init = function (config) {
                 && command !== 'off') {
                 return;
             }
-            if (command === 'off') {
-                this.set("metrics:triggered", false);
-            }
             this.set("metrics:level", command);
             this.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+command+".png");
+            if (command === 'off') {
+                self.resetInterval();
+                self.resetTimeout();
+                // TODO Should we turn off triggered devices?
+                this.set("metrics:triggered", false);
+            } else if (command === 'on') {
+                // TODO Should we check the condition?
+            }
         },
         moduleId: this.id
     });
@@ -66,7 +72,7 @@ MotionTrigger.prototype.init = function (config) {
 
 MotionTrigger.prototype.initCallback = function() {
     var self = this;
-    
+
     _.each(self.config.securitySensors,function(deviceId) {
         var device  = self.controller.devices.get(deviceId);
         if (device == 'null') {
@@ -74,6 +80,13 @@ MotionTrigger.prototype.initCallback = function() {
         } else {
             device.on('change:metrics:level',self.callback);
         }
+        /*
+        self.controller.devices.on(
+            deviceId, 
+            'change:metrics:level', 
+            self.callback
+        );
+        */
     });
 };
 
@@ -89,6 +102,7 @@ MotionTrigger.prototype.stop = function() {
     
     self.callback = undefined;
     
+    self.resetInterval();
     self.resetTimeout();
     
     if (self.vDev) {
@@ -102,7 +116,7 @@ MotionTrigger.prototype.stop = function() {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
-MotionTrigger.prototype.triggerSensor = function(sensor) {
+MotionTrigger.prototype.triggerSensor = function() {
     var self = this;
     
     // Check trigger device on
@@ -110,85 +124,130 @@ MotionTrigger.prototype.triggerSensor = function(sensor) {
         return;
     }
     
-    // Reset timeouts if any
+    // Reset timeouts & intervals if any
     self.resetTimeout();
+    self.resetInterval();
     
     // Check security device status
-    var sensors = false;
-    _.each(self.config.securitySensors,function(deviceId) {
-        var device = self.controller.devices.get(deviceId);
-        var level = device.get("metrics:level");
-        if (level === 'on') {
-            sensors = true;
-        }
-    });
-    
+    var sensors = self.checkDevice(self.config.securitySensors);
     
     // Triggered sensor
     if (sensors === true) {
         // Check trigger lights on
-        var lights = false;
-        _.each([self.config.lights,self.config.extraLights],function(list) {
-            _.each(list,function(deviceId) {
-                var device = self.controller.devices.get(deviceId);
-                var level = device.get("metrics:level");
-                if (device.get('deviceType') === 'switchBinary') {
-                    if (level === 'on') {
-                        lights = true;
-                    }
-                } else if (device.get('deviceType') === 'switchMultilevel') {
-                    if (level > 0) {
-                        lights = true;
-                    }
-                } else {
-                    console.error('[MotionTrigger] Unspported device type '+device.get('deviceType'));
-                    return;
-                }
-            });
-        });
+        var lights      = self.checkDevice(self.config.lights);
+        var extraLights = self.checkDevice(self.config.extraLights);
         
         // Check extra sensors
-        var check = true;
-        _.each(self.config.preconditions,function(element) {
-            var device = self.controller.devices.get(element.device);
-            var level = device.get("metrics:level");
-            if (! self.op(level,element.testOperator,element.testValue)) {
-                check = false;
-            }
-        });
+        var precondition = self.checkPrecondition();
         
-        console.log('[MotionTrigger] Triggered security sensor (preconditions: '+check+', running: '+lights+')');
+        console.log('[MotionTrigger] Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+')');
         
         // Trigger light
-        if (check === true) {
-            self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
-            if (lights === false) {
-                self.switchDevices(true);
-            }
+        if (precondition === true 
+            && lights === false
+            && extraLights == false) {
+            self.switchDevice(true);
         }
     // Untriggered sensor
     } else if (sensors === false) {
         if (self.vDev.get("metrics:triggered") === true) {
-            if (self.config.duration > 0) {
-                self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
-                self.timeout = setTimeout(
-                    _.bind(self.switchDevices,self,false),
-                    (parseInt(self.config.duration) * 1000)
-                );
-            } else {
-                self.switchDevices(false);
-            }
+            self.untriggerDevice();
         }
     }
 };
 
-MotionTrigger.prototype.switchDevices = function(mode) {
+MotionTrigger.prototype.checkInterval = function() {
+    var self = this;
+    
+    // Check trigger device on, triggered and no timeout
+    if (self.vDev.get('metrics:level') !== 'on'
+        || self.vDev.get('metrics:triggered') == false
+        || typeof(self.timeout) !== 'undefined') {
+        return;
+    }
+    
+    var check = self.checkPrecondition();
+    console.log('[DeviceMove] Recheck interval '+check);
+    if (! check) {
+        self.untriggerDevice();
+    }
+};
+
+MotionTrigger.prototype.untriggerDevice = function() {
+    var self = this;
+    
+    console.log('[MotionTrigger] Untriggered security sensor');
+
+    if (self.config.timeout > 0) {
+        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
+        self.timeout = setTimeout(
+            _.bind(self.switchDevice,self,false),
+            (parseInt(self.config.timeout) * 1000)
+        );
+    } else {
+        self.switchDevice(false);
+    }
+};
+
+// Helper method to check any device in list of devices if on
+MotionTrigger.prototype.checkDevice = function(devices) {
+    var self = this;
+    
+    var status = false;
+    _.each(devices,function(deviceId) {
+        var device  = self.controller.devices.get(deviceId);
+        var type    = device.get('deviceType') ;
+        var level   = device.get("metrics:level");
+        if (type === 'switchBinary'
+            || type === 'sensorBinary') {
+            if (level === 'on') {
+                status = true;
+            }
+        } else if (type === 'switchMultilevel'
+            || type === 'sensorMulitlevel') {
+            if (level > 0) {
+                status = true;
+            }
+        } else {
+            console.error('[MotionTrigger] Unspported device type '+device.get('deviceType'));
+            return;
+        }
+    });
+    
+    return status;
+};
+
+// Helper to check preconditions
+MotionTrigger.prototype.checkPrecondition = function() {
+    var self = this;
+    
+    var check = true;
+    _.each(self.config.preconditions,function(element) {
+        var device = self.controller.devices.get(element.device);
+        var level = device.get("metrics:level");
+        if (! self.op(level,element.testOperator,element.testValue)) {
+            check = false;
+        }
+    });
+    
+    return check;
+}
+
+MotionTrigger.prototype.switchDevice = function(mode) {
     var self = this;
     
     var state = self.vDev.get('metrics:level');
     if (state === 'on' && mode === true) {
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
+        
+        if (self.config.recheckPreconditions) {
+            self.interval = setInterval(
+                _.bind(self.checkInterval,self),
+                (1000 * 30)
+            );
+        }
     } else {
+        self.resetInterval();
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+state+".png");
     }
     self.resetTimeout();
@@ -204,13 +263,24 @@ MotionTrigger.prototype.switchDevices = function(mode) {
             var level = (mode) ? 99:0;
             device.performCommand('exact',level);
         } else {
-            console.error('Unspported device type '+device.get('deviceType'));
+            console.error('[DeviceMove] Unspported device type '+device.get('deviceType'));
             return;
         }
         device.set('metrics:auto',mode);
     });
 };
 
+// Reset interval helper
+MotionTrigger.prototype.resetInterval = function() {
+    var self = this;
+    
+    if (typeof(self.interval) === 'undefined') {
+        clearInterval(self.interval);
+        self.interval = undefined;
+    }
+};
+
+// Reset timeout helper
 MotionTrigger.prototype.resetTimeout = function() {
     var self = this;
     
@@ -220,6 +290,7 @@ MotionTrigger.prototype.resetTimeout = function() {
     }
 };
 
+// Condition comparison helper
 MotionTrigger.prototype.op = function (dval, op, val) {
     if (op === "=") {
         return dval === val;
