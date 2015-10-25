@@ -23,6 +23,7 @@
         "properties": {
             "lights": {
                 "type": "array",
+                "minItems": 1,
                 "items": {
                     "field": "enum",
                     "datasource": "namespaces",
@@ -40,6 +41,7 @@
             },
             "securitySensors": {
                 "type": "array",
+                "minItems": 1,
                 "items": {
                     "field": "enum",
                     "datasource": "namespaces",
