@@ -1,151 +1,165 @@
 {
-    "dependencies": [],
-    "singleton": true,
-    "category": "automation",
-    "author": "Maroš Kollár",
-    "homepage": "http://k-1.com",
-    "icon": "icon.png",
-    "version": "1.00",
-    "moduleName": "MotionTrigger",
-    "maturity": "stable",
-    "repository": {
-        "type": "git",
-        "source": "https://github.com/maros/Zway-MotionTrigger"
-    },
-    "defaults": {
-        "title": "__title__",
-        "description": "__description__",
-        "timeout": 180,
-        "recheckPreconditions": false
-    },
-    "schema": {
-        "type": "object",
-        "properties": {
-            "lights": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                    "field": "enum",
-                    "datasource": "namespaces",
-                    "enum": "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
-                    "required": true
-                }
+   "author" : "Maroš Kollár",
+   "category" : "automation",
+   "defaults" : {
+      "description" : "__description__",
+      "recheckPreconditions" : false,
+      "timeout" : 180,
+      "title" : "__title__"
+   },
+   "dependencies" : [],
+   "homepage" : "http://k-1.com",
+   "icon" : "icon.png",
+   "maturity" : "stable",
+   "moduleName" : "MotionTrigger",
+   "options" : {
+      "fields" : {
+         "extraLights" : {
+            "fields" : {
+               "item" : {
+                  "datasource" : "namespaces",
+                  "field" : "devices",
+                  "optionLabels" : "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
+                  "type" : "select"
+               }
             },
-            "extraLights": {
-                "type": "array",
-                "items": {
-                    "field": "enum",
-                    "datasource": "namespaces",
-                    "enum": "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId"
-                }
+            "helper" : "__extra_lights_helper__",
+            "label" : "__extra_lights_label__"
+         },
+         "lights" : {
+            "fields" : {
+               "item" : {
+                  "datasource" : "namespaces",
+                  "field" : "devices",
+                  "optionLabels" : "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
+                  "type" : "select"
+               }
             },
-            "securitySensors": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                    "field": "enum",
-                    "datasource": "namespaces",
-                    "enum": "namespaces:devices_sensorBinary:deviceId",
-                    "required": true
-                }
+            "label" : "__lights_label__"
+         },
+         "preconditions" : {
+            "fields" : {
+               "device" : {
+                  "datasource" : "namespaces",
+                  "field" : "optionLabels",
+                  "label" : "",
+                  "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName",
+                  "type" : "select"
+               },
+               "testOperator" : {
+                  "optionLabels" : [
+                     "=",
+                     "≠",
+                     ">",
+                     "≥",
+                     "<",
+                     "≤"
+                  ],
+                  "type" : "select"
+               }
             },
-            "preconditions": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "required": true,
-                    "properties": {
-                        "device": {
-                            "field": "enum",
-                            "datasource": "namespaces",
-                            "enum": "namespaces:devices_sensorMultilevel:deviceId",
-                            "required": true
-                        },
-                        "testOperator": {
-                            "type": "string",
-                            "enum": ["=", "!=", ">", ">=", "<", "<="],
-                            "required": true
-                        },
-                        "testValue": {
-                            "type": "number",
-                            "required": true
-                        }
-                    }
-                }
+            "helper" : "__preconditions_helper__",
+            "label" : "__preconditions_label__"
+         },
+         "recheckPreconditions" : {
+            "helper" : "__recheck_preconditions_helper__",
+            "label" : "__recheck_preconditions_label__"
+         },
+         "securitySensors" : {
+            "fields" : {
+               "item" : {
+                  "datasource" : "namespaces",
+                  "field" : "devices",
+                  "optionLabels" : "namespaces:devices_sensorBinary:deviceName",
+                  "type" : "select"
+               }
             },
-            "timeout": {
-                "type": "integer",
-                "required": true,
-                "minimum": 1
+            "label" : "__security_sensors_label__"
+         },
+         "timeout" : {
+            "helper" : "__timeout_helper__",
+            "label" : "__timeout_label__"
+         }
+      }
+   },
+   "repository" : {
+      "source" : "https://github.com/maros/Zway-MotionTrigger",
+      "type" : "git"
+   },
+   "schema" : {
+      "properties" : {
+         "extraLights" : {
+            "items" : {
+               "datasource" : "namespaces",
+               "enum" : "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
+               "field" : "enum"
             },
-            "recheckPreconditions": {
-                "type": "boolean",
-                "required": true
-            }
-        },
-        "required": true
-    },
-    "options": {
-        "fields": {
-            "lights": {
-                "label": "__lights_label__",
-                "fields": {
-                    "item": {
-                        "type": "select",
-                        "datasource": "namespaces",
-                        "field": "devices",
-                        "optionLabels": "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName"
-                    }
-                }
+            "type" : "array"
+         },
+         "lights" : {
+            "items" : {
+               "datasource" : "namespaces",
+               "enum" : "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
+               "field" : "enum",
+               "required" : true
             },
-            "extraLights": {
-                "label": "__extra_lights_label__",
-                "helper": "__extra_lights_helper__",
-                "fields": {
-                    "item": {
-                        "type": "select",
-                        "datasource": "namespaces",
-                        "field": "devices",
-                        "optionLabels": "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName"
-                    }
-                }
+            "minItems" : 1,
+            "type" : "array"
+         },
+         "preconditions" : {
+            "items" : {
+               "properties" : {
+                  "device" : {
+                     "datasource" : "namespaces",
+                     "enum" : "namespaces:devices_sensorMultilevel:deviceId",
+                     "field" : "enum",
+                     "required" : true
+                  },
+                  "testOperator" : {
+                     "enum" : [
+                        "=",
+                        "!=",
+                        ">",
+                        ">=",
+                        "<",
+                        "<="
+                     ],
+                     "required" : true,
+                     "type" : "string"
+                  },
+                  "testValue" : {
+                     "required" : true,
+                     "type" : "number"
+                  }
+               },
+               "required" : true,
+               "type" : "object"
             },
-            "securitySensors": {
-                "label": "__security_sensors_label__",
-                "fields": {
-                    "item": {
-                        "type": "select",
-                        "datasource": "namespaces",
-                        "field": "devices",
-                        "optionLabels": "namespaces:devices_sensorBinary:deviceName"
-                    }
-                }
+            "type" : "array"
+         },
+         "recheckPreconditions" : {
+            "required" : true,
+            "type" : "boolean"
+         },
+         "securitySensors" : {
+            "items" : {
+               "datasource" : "namespaces",
+               "enum" : "namespaces:devices_sensorBinary:deviceId",
+               "field" : "enum",
+               "required" : true
             },
-            "preconditions": {
-                "label": "__preconditions_label__",
-                "helper": "__preconditions_helper__",
-                "fields": {
-                    "device": {
-                        "label": "",
-                        "type": "select",
-                        "datasource": "namespaces",
-                        "field": "optionLabels",
-                        "optionLabels": "namespaces:devices_sensorMultilevel:deviceName"
-                    },
-                    "testOperator": {
-                        "type": "select",
-                        "optionLabels": ["=", "≠", ">", "≥", "<", "≤"]
-                    }
-                }
-            },
-            "timeout": {
-                "label": "__timeout_label__",
-                "helper": "__timeout_helper__"
-            },
-            "recheckPreconditions": {
-                "label": "__recheck_preconditions_label__",
-                "helper": "__recheck_preconditions_helper__"
-            }
-        }
-    }
+            "minItems" : 1,
+            "type" : "array"
+         },
+         "timeout" : {
+            "minimum" : 1,
+            "required" : true,
+            "type" : "integer"
+         }
+      },
+      "required" : true,
+      "type" : "object"
+   },
+   "singleton" : true,
+   "version" : "1.01"
 }
