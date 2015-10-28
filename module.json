@@ -24,7 +24,8 @@
                }
             },
             "helper" : "__extra_lights_helper__",
-            "label" : "__extra_lights_label__"
+            "label" : "__extra_lights_label__",
+            "order": 4
          },
          "lights" : {
             "fields" : {
@@ -35,7 +36,8 @@
                   "type" : "select"
                }
             },
-            "label" : "__lights_label__"
+            "label" : "__lights_label__",
+            "order": 2
          },
          "preconditions" : {
             "fields" : {
@@ -59,11 +61,13 @@
                }
             },
             "helper" : "__preconditions_helper__",
-            "label" : "__preconditions_label__"
+            "label" : "__preconditions_label__",
+            "order": 5
          },
          "recheckPreconditions" : {
             "helper" : "__recheck_preconditions_helper__",
-            "label" : "__recheck_preconditions_label__"
+            "label" : "__recheck_preconditions_label__",
+            "order": 6
          },
          "securitySensors" : {
             "fields" : {
@@ -74,17 +78,20 @@
                   "type" : "select"
                }
             },
-            "label" : "__security_sensors_label__"
+            "label" : "__security_sensors_label__",
+            "order": 1
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
-            "label" : "__timeout_label__"
+            "label" : "__timeout_label__",
+            "order": 7
          },
          "dimmerLevel" : {
              "type": "textarea",
              "cols": 40,
              "helper" : "__dimmer_level_helper__",
-             "label" : "__dimmer_level_label__"
+             "label" : "__dimmer_level_label__",
+             "order": 3
           }
       }
    },
