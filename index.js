@@ -3,7 +3,7 @@
 Version: 1.01
 (c) Maroš Kollár, 2015
 -----------------------------------------------------------------------------
-Author: maros@k-1.com <maros@k-1.com>
+Author: Maroš Kollár <maros@k-1.com>
 Description:
     Trigger lights by security/motion sensors
 
@@ -16,6 +16,7 @@ function MotionTrigger (id, controller) {
     this.timeout    = undefined;
     this.callback   = undefined;
     this.interval   = undefined;
+    this.dimmerLevel= undefined;
 }
 
 inherits(MotionTrigger, AutomationModule);
@@ -33,8 +34,8 @@ MotionTrigger.prototype.init = function (config) {
     var langFile = self.controller.loadModuleLang("MotionTrigger");
     
     // Create vdev
-    this.vDev = this.controller.devices.create({
-        deviceId: "MotionTrigger_" + this.id,
+    self.vDev = this.controller.devices.create({
+        deviceId: "MotionTrigger_" + self.id,
         defaults: {
             metrics: {
                 probeTitle: 'controller',
@@ -63,8 +64,16 @@ MotionTrigger.prototype.init = function (config) {
                 // TODO Should we check the condition?
             }
         },
-        moduleId: this.id
+        moduleId: self.id
     });
+    
+    if (typeof(self.config.dimmerLevel) === 'string'
+        && self.config.dimmerLevel != '') {
+        self.dimmerLevel = self.config.dimmerLevel;
+        if (self.dimmerLevel.match('^\s*\d+\s*$')) {
+            self.dimmerLevel = parseInt(self.dimmerLevel);
+        }
+    }
     
     self.callback = _.bind(self.triggerSensor,self);
     setTimeout(_.bind(self.initCallback,self),10000);
@@ -237,6 +246,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     var self = this;
     
     var state = self.vDev.get('metrics:level');
+    var dimmerLevel = 99;
     if (state === 'on' && mode === true) {
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
         
@@ -245,6 +255,20 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                 _.bind(self.checkInterval,self),
                 (1000 * 30)
             );
+        }
+        
+        if (typeof(self.dimmerLevel) === 'integer') {
+            dimmerLevel = self.dimmerLevel;
+        } else if (typeof(self.dimmerLevel) === 'string') {
+            try {
+                dimmerLevel = parseInt(eval(self.dimmerLevel));
+            } catch (e) {
+                console.error('[MotionTrigger] Could not calculate dimmer level: '+e);
+                dimmerLevel = 99;
+            }
+        }
+        if (dimmerLevel > 99) {
+            dimmerLevel = 99;
         }
     } else {
         self.resetInterval();
@@ -260,7 +284,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         if (device.get('deviceType') === 'switchBinary') {
             device.performCommand((mode) ? 'on':'off');
         } else if (device.get('deviceType') === 'switchMultilevel') {
-            var level = (mode) ? 99:0;
+            var level = (mode) ? dimmerLevel:0;
             device.performCommand('exact',level);
         } else {
             console.error('[DeviceMove] Unspported device type '+device.get('deviceType'));

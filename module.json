@@ -79,7 +79,13 @@
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__"
-         }
+         },
+         "dimmerLevel" : {
+             "type": "textarea",
+             "cols": 40,
+             "helper" : "__dimmer_level_helper__",
+             "label" : "__dimmer_level_label__"
+          }
       }
    },
    "repository" : {
@@ -155,7 +161,10 @@
             "minimum" : 1,
             "required" : true,
             "type" : "integer"
-         }
+         },
+         "dimmerLevel" : {
+             "type": "string"
+          }
       },
       "required" : true,
       "type" : "object"
