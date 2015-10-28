@@ -285,7 +285,11 @@ MotionTrigger.prototype.switchDevice = function(mode) {
             device.performCommand((mode) ? 'on':'off');
         } else if (device.get('deviceType') === 'switchMultilevel') {
             var level = (mode) ? dimmerLevel:0;
-            device.performCommand('exact',level);
+            if (level ===  0) {
+                device.performCommand('off');
+            } else {
+                device.performCommand('exact',{ level: level });
+            }
         } else {
             console.error('[DeviceMove] Unspported device type '+device.get('deviceType'));
             return;
