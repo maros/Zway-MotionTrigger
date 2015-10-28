@@ -257,7 +257,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
             );
         }
         
-        if (typeof(self.dimmerLevel) === 'integer') {
+        if (typeof(self.dimmerLevel) === 'number') {
             dimmerLevel = self.dimmerLevel;
         } else if (typeof(self.dimmerLevel) === 'string') {
             try {
