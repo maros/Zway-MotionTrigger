@@ -107,6 +107,7 @@
                "enum" : "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
                "field" : "enum"
             },
+            "uniqueItems": true,
             "type" : "array"
          },
          "lights" : {
@@ -117,6 +118,7 @@
                "required" : true
             },
             "minItems" : 1,
+            "uniqueItems": true,
             "type" : "array"
          },
          "preconditions" : {
@@ -162,6 +164,7 @@
                "required" : true
             },
             "minItems" : 1,
+            "uniqueItems": true,
             "type" : "array"
          },
          "timeout" : {
