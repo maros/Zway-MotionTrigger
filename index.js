@@ -145,6 +145,7 @@ MotionTrigger.prototype.triggerSensor = function() {
         // Check trigger lights on
         var lights      = self.checkDevice(self.config.lights);
         var extraLights = self.checkDevice(self.config.extraLights);
+        var triggered   = self.vDev.get('metrics:triggered');
         
         // Check extra sensors
         var precondition = self.checkPrecondition();
@@ -156,6 +157,9 @@ MotionTrigger.prototype.triggerSensor = function() {
             && lights === false
             && extraLights == false) {
             self.switchDevice(true);
+        // Retrigger light
+        } else if (triggered === true && (! self.config.recheckPreconditions || precondition === true)) {
+            self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
         }
     // Untriggered sensor
     } else if (sensors === false) {
