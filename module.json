@@ -14,6 +14,13 @@
    "moduleName" : "MotionTrigger",
    "options" : {
       "fields" : {
+         "dimmerLevel" : {
+            "cols" : 40,
+            "helper" : "__dimmer_level_helper__",
+            "label" : "__dimmer_level_label__",
+            "order" : 3,
+            "type" : "textarea"
+         },
          "extraLights" : {
             "fields" : {
                "item" : {
@@ -25,7 +32,7 @@
             },
             "helper" : "__extra_lights_helper__",
             "label" : "__extra_lights_label__",
-            "order": 4
+            "order" : 4
          },
          "lights" : {
             "fields" : {
@@ -37,39 +44,39 @@
                }
             },
             "label" : "__lights_label__",
-            "order": 2
+            "order" : 2
          },
          "preconditions" : {
-            "items": {
-                "fields" : {
-                   "device" : {
-                      "datasource" : "namespaces",
-                      "field" : "optionLabels",
-                      "label" : "",
-                      "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName",
-                      "type" : "select"
-                   },
-                   "testOperator" : {
-                      "optionLabels" : [
-                         "=",
-                         "≠",
-                         ">",
-                         "≥",
-                         "<",
-                         "≤"
-                      ],
-                      "type" : "select"
-                   }
-                }
-            },
             "helper" : "__preconditions_helper__",
+            "items" : {
+               "fields" : {
+                  "device" : {
+                     "datasource" : "namespaces",
+                     "field" : "optionLabels",
+                     "label" : "",
+                     "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName",
+                     "type" : "select"
+                  },
+                  "testOperator" : {
+                     "optionLabels" : [
+                        "=",
+                        "≠",
+                        ">",
+                        "≥",
+                        "<",
+                        "≤"
+                     ],
+                     "type" : "select"
+                  }
+               }
+            },
             "label" : "__preconditions_label__",
-            "order": 5
+            "order" : 5
          },
          "recheckPreconditions" : {
             "helper" : "__recheck_preconditions_helper__",
             "label" : "__recheck_preconditions_label__",
-            "order": 6
+            "order" : 6
          },
          "securitySensors" : {
             "fields" : {
@@ -81,20 +88,13 @@
                }
             },
             "label" : "__security_sensors_label__",
-            "order": 1
+            "order" : 1
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
-            "order": 7
-         },
-         "dimmerLevel" : {
-             "type": "textarea",
-             "cols": 40,
-             "helper" : "__dimmer_level_helper__",
-             "label" : "__dimmer_level_label__",
-             "order": 3
-          }
+            "order" : 7
+         }
       }
    },
    "repository" : {
@@ -103,14 +103,17 @@
    },
    "schema" : {
       "properties" : {
+         "dimmerLevel" : {
+            "type" : "string"
+         },
          "extraLights" : {
             "items" : {
                "datasource" : "namespaces",
                "enum" : "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
                "field" : "enum"
             },
-            "uniqueItems": true,
-            "type" : "array"
+            "type" : "array",
+            "uniqueItems" : true
          },
          "lights" : {
             "items" : {
@@ -120,8 +123,8 @@
                "required" : true
             },
             "minItems" : 1,
-            "uniqueItems": true,
-            "type" : "array"
+            "type" : "array",
+            "uniqueItems" : true
          },
          "preconditions" : {
             "items" : {
@@ -166,21 +169,18 @@
                "required" : true
             },
             "minItems" : 1,
-            "uniqueItems": true,
-            "type" : "array"
+            "type" : "array",
+            "uniqueItems" : true
          },
          "timeout" : {
             "minimum" : 1,
             "required" : true,
             "type" : "integer"
-         },
-         "dimmerLevel" : {
-             "type": "string"
-          }
+         }
       },
       "required" : true,
       "type" : "object"
    },
    "singleton" : true,
-   "version" : "1.01"
+   "version" : "1.02"
 }
