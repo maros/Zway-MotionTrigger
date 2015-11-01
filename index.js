@@ -105,7 +105,7 @@ MotionTrigger.prototype.stop = function() {
     _.each(self.config.securitySensors,function(deviceId) {
         var device  = self.controller.devices.get(deviceId);
         if (device != 'null') {
-            deviceId.off('change:metrics:level',self.callback);
+            device.off('change:metrics:level',self.callback);
         }
     });
     
