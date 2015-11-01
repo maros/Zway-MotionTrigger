@@ -61,7 +61,8 @@ MotionTrigger.prototype.init = function (config) {
                 // TODO Should we turn off triggered devices?
                 this.set("metrics:triggered", false);
             } else if (command === 'on') {
-                // TODO Should we check the condition?
+                // Check the condition and tigger imediately
+                self.triggerSensor();
             }
         },
         moduleId: self.id
