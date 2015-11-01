@@ -18,7 +18,7 @@
             "fields" : {
                "item" : {
                   "datasource" : "namespaces",
-                  "field" : "devices",
+                  "field" : "optionLabels",
                   "optionLabels" : "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
                   "type" : "select"
                }
@@ -31,7 +31,7 @@
             "fields" : {
                "item" : {
                   "datasource" : "namespaces",
-                  "field" : "devices",
+                  "field" : "optionLabels",
                   "optionLabels" : "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
                   "type" : "select"
                }
@@ -40,25 +40,27 @@
             "order": 2
          },
          "preconditions" : {
-            "fields" : {
-               "device" : {
-                  "datasource" : "namespaces",
-                  "field" : "optionLabels",
-                  "label" : "",
-                  "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName",
-                  "type" : "select"
-               },
-               "testOperator" : {
-                  "optionLabels" : [
-                     "=",
-                     "≠",
-                     ">",
-                     "≥",
-                     "<",
-                     "≤"
-                  ],
-                  "type" : "select"
-               }
+            "items": {
+                "fields" : {
+                   "device" : {
+                      "datasource" : "namespaces",
+                      "field" : "optionLabels",
+                      "label" : "",
+                      "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName",
+                      "type" : "select"
+                   },
+                   "testOperator" : {
+                      "optionLabels" : [
+                         "=",
+                         "≠",
+                         ">",
+                         "≥",
+                         "<",
+                         "≤"
+                      ],
+                      "type" : "select"
+                   }
+                }
             },
             "helper" : "__preconditions_helper__",
             "label" : "__preconditions_label__",
