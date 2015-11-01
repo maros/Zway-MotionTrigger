@@ -42,6 +42,11 @@ Value to be used for the check
 
 Trigger duration after the last security sensor has been untripped.
 
+## dimmerLevel
+
+Set the dimmer levels. The value may either be a number, or a JavaScript
+function that calculates the levels (eg. based on time, luminosity, ...)
+
 # Virtual Devices
 
 This module creates a virtual binary switch device to turn on/off the trigger.
