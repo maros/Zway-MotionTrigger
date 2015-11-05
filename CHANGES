@@ -9,9 +9,9 @@
 
 1.01 2015 Oct 25, Sun
     * Check preconditions regularly
-	* Handle missing devices
-	* Show timeout state
-	* Store triggered state in virtual device
+    * Handle missing devices
+    * Show timeout state
+    * Store triggered state in virtual device
 
 1.00 2015 Oct 16, Fri
     * Initial Release 
