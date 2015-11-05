@@ -9,7 +9,7 @@
    },
    "dependencies" : [],
    "homepage" : "http://k-1.com",
-   "icon" : "icon.png",
+   "icon" : "icon_on.png",
    "maturity" : "stable",
    "moduleName" : "MotionTrigger",
    "options" : {
