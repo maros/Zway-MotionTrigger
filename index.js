@@ -84,11 +84,11 @@ MotionTrigger.prototype.initCallback = function() {
     var self = this;
 
     _.each(self.config.securitySensors,function(deviceId) {
-        var device  = self.controller.devices.get(deviceId);
-        if (device == 'null') {
+        var deviceObject  = self.controller.devices.get(deviceId);
+        if (deviceObject === null) {
             console.error('[MotionTrigger] Device not found '+deviceId);
         } else {
-            device.on('change:metrics:level',self.callback);
+            deviceObject.on('change:metrics:level',self.callback);
         }
         /*
         self.controller.devices.on(
@@ -104,9 +104,9 @@ MotionTrigger.prototype.stop = function() {
     var self = this;
     
     _.each(self.config.securitySensors,function(deviceId) {
-        var device  = self.controller.devices.get(deviceId);
-        if (device != 'null') {
-            device.off('change:metrics:level',self.callback);
+        var deviceObject  = self.controller.devices.get(deviceId);
+        if (deviceObject !== null) {
+            deviceObject.off('change:metrics:level',self.callback);
         }
     });
     
@@ -209,9 +209,12 @@ MotionTrigger.prototype.checkDevice = function(devices) {
     
     var status = false;
     _.each(devices,function(deviceId) {
-        var device  = self.controller.devices.get(deviceId);
-        var type    = device.get('deviceType') ;
-        var level   = device.get("metrics:level");
+        var deviceObject = self.controller.devices.get(deviceId);
+        if (deviceObject === null) {
+            return;
+        }
+        var type    = deviceObject.get('deviceType') ;
+        var level   = deviceObject.get("metrics:level");
         if (type === 'switchBinary'
             || type === 'sensorBinary') {
             if (level === 'on') {
@@ -223,7 +226,7 @@ MotionTrigger.prototype.checkDevice = function(devices) {
                 status = true;
             }
         } else {
-            console.error('[MotionTrigger] Unspported device type '+device.get('deviceType'));
+            console.error('[MotionTrigger] Unspported device type '+deviceObject.get('deviceType'));
             return;
         }
     });
@@ -237,8 +240,11 @@ MotionTrigger.prototype.checkPrecondition = function() {
     
     var check = true;
     _.each(self.config.preconditions,function(element) {
-        var device = self.controller.devices.get(element.device);
-        var level = device.get("metrics:level");
+        var deviceObject = self.controller.devices.get(element.device);
+        if (deviceObject === null) {
+            return;
+        }
+        var level = deviceObject.get("metrics:level");
         if (! self.op(level,element.testOperator,element.testValue)) {
             check = false;
         }
@@ -285,21 +291,24 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     console.log('[MotionTrigger] Turining '+(mode ? 'on':'off'));
     
     _.each(self.config.lights,function(deviceId) {
-        var device = self.controller.devices.get(deviceId);
-        if (device.get('deviceType') === 'switchBinary') {
-            device.performCommand((mode) ? 'on':'off');
-        } else if (device.get('deviceType') === 'switchMultilevel') {
-            var level = (mode) ? dimmerLevel:0;
-            if (level ===  0) {
-                device.performCommand('off');
-            } else {
-                device.performCommand('exact',{ level: level });
-            }
-        } else {
-            console.error('[DeviceMove] Unspported device type '+device.get('deviceType'));
+        var deviceObject = self.controller.devices.get(deviceId);
+        if (deviceObject === null) {
             return;
         }
-        device.set('metrics:auto',mode);
+        if (deviceObject.get('deviceType') === 'switchBinary') {
+            deviceObject.performCommand((mode) ? 'on':'off');
+        } else if (deviceObject.get('deviceType') === 'switchMultilevel') {
+            var level = (mode) ? dimmerLevel:0;
+            if (level ===  0) {
+                deviceObject.performCommand('off');
+            } else {
+                deviceObject.performCommand('exact',{ level: level });
+            }
+        } else {
+            console.error('[DeviceMove] Unspported device type '+deviceObject.get('deviceType'));
+            return;
+        }
+        deviceObject.set('metrics:auto',mode);
     });
 };
 
