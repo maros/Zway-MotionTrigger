@@ -10,6 +10,10 @@
    "recheck_preconditions_helper" : "Check preconditions regularly (Enable) or only once upon triggering the device (Disable)",
    "recheck_preconditions_label" : "Regularly re-check preconditions",
    "security_sensors_label" : "Security Sensors",
+   "time_end_label" : "End",
+   "time_label" : "Active Time",
+   "time_placeholder" : "HH:MM",
+   "time_start_label" : "Start",
    "timeout_helper" : "Keep triggered delay after sensor was untripped",
    "timeout_label" : "Trigger timeout (seconds)",
    "title" : "Smart light triggers"

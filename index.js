@@ -250,6 +250,24 @@ MotionTrigger.prototype.checkPrecondition = function() {
         }
     });
     
+    if (check === true) {
+        var dateNow = new Date();
+        _.each(self.config.timeActive,function(element) {
+            var start   = self.calcTime(element.start);
+            var end     = self.calcTime(element.end);
+            if (end < start) {
+                var hour    = end.getHours();
+                var minute  = end.getMinutes();
+                end.setHours(end.getHours() + 24);
+                // Now fix time jump on DST
+                end.setHours(hour,minute);
+            }
+            if (dateNow > end || dateNow < start) {
+                check = false;
+            }
+        });
+    }
+    
     return check;
 }
 
@@ -349,6 +367,25 @@ MotionTrigger.prototype.op = function (dval, op, val) {
     }
         
     return null; // error!!  
+};
+
+MotionTrigger.prototype.calcTime = function(timeString) {
+    var self = this;
+    
+    if (typeof(timeString) !== 'string') {
+        return;
+    }
+    
+    var match = timeString.match(/^(\d{1,2}):(\d{1,2})$/);
+    if (!match) {
+        return;
+    }
+    var hour        = parseInt(match[1]);
+    var minute      = parseInt(match[2]);
+    var dateCalc    = new Date();
+    dateCalc.setHours(hour, minute);
+    
+    return dateCalc;
 };
 
  

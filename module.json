@@ -76,7 +76,7 @@
          "recheckPreconditions" : {
             "helper" : "__recheck_preconditions_helper__",
             "label" : "__recheck_preconditions_label__",
-            "order" : 6
+            "order" : 7
          },
          "securitySensors" : {
             "fields" : {
@@ -93,7 +93,29 @@
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
-            "order" : 7
+            "order" : 8
+         },
+         "timeActive": {
+             "label" : "__time_label__",
+             "order" : 6,
+             "items": {
+                 "fields": {
+                     "end" : {
+                         "label" : "__time_end_label__",
+                         "maskString" : "99:99",
+                         "order" : 2,
+                         "placeholder" : "__time_placeholder__",
+                         "type" : "time"
+                      },
+                      "start" : {
+                         "label" : "__time_start_label__",
+                         "maskString" : "99:99",
+                         "order" : 1,
+                         "placeholder" : "__time_placeholder__",
+                         "type" : "time"
+                      }
+                 }
+             }
          }
       }
    },
@@ -176,6 +198,26 @@
             "minimum" : 1,
             "required" : true,
             "type" : "integer"
+         },
+         "timeActive": {
+             "type" : "array",
+             "items": {
+                 "type" : "object",
+                 "properties": {
+                     "end" : {
+                         "pattern" : "^(([01]?[0-9]|(2[0-3])):([0-5][0-9])$",
+                         "required" : true,
+                         "type" : "string",
+                         "required": true
+                      },
+                      "start" : {
+                          "pattern" : "^(([01]?[0-9]|(2[0-3])):([0-5][0-9])$",
+                          "required" : true,
+                          "type" : "string",
+                          "required": true
+                      }
+                 }
+             }
          }
       },
       "required" : true,
