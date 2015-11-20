@@ -58,8 +58,10 @@ MotionTrigger.prototype.init = function (config) {
             if (command === 'off') {
                 self.resetInterval();
                 self.resetTimeout();
-                // TODO Should we turn off triggered devices?
-                this.set("metrics:triggered", false);
+                // Turn off if triggered
+                if (this.get("metrics:triggered")) {
+                    self.switchDevice(false);
+                }
             } else if (command === 'on') {
                 // Check the condition and tigger imediately
                 self.triggerSensor();
@@ -90,14 +92,11 @@ MotionTrigger.prototype.initCallback = function() {
         } else {
             deviceObject.on('change:metrics:level',self.callback);
         }
-        /*
-        self.controller.devices.on(
-            deviceId, 
-            'change:metrics:level', 
-            self.callback
-        );
-        */
     });
+
+    if (self.vDev.get('metrics:triggered')) {
+        self.triggerSensor();
+    }
 };
 
 MotionTrigger.prototype.stop = function() {
@@ -274,9 +273,9 @@ MotionTrigger.prototype.checkPrecondition = function() {
 MotionTrigger.prototype.switchDevice = function(mode) {
     var self = this;
     
-    var state = self.vDev.get('metrics:level');
+    var level = self.vDev.get('metrics:level');
     var dimmerLevel = 255;
-    if (state === 'on' && mode === true) {
+    if (level === 'on' && mode === true) {
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
         
         if (self.config.recheckPreconditions) {
@@ -301,7 +300,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         }
     } else {
         self.resetInterval();
-        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+state+".png");
+        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+level+".png");
     }
     self.resetTimeout();
     self.vDev.set("metrics:triggered",mode);
