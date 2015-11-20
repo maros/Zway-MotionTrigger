@@ -42,7 +42,8 @@ MotionTrigger.prototype.init = function (config) {
                 level: 'off',
                 title: langFile.title,
                 icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png",
-                triggered: false
+                triggered: false,
+                timeout: null
             }
         },
         overlay: {
@@ -85,6 +86,24 @@ MotionTrigger.prototype.init = function (config) {
 MotionTrigger.prototype.initCallback = function() {
     var self = this;
 
+    // Correctly init after restart
+    var timeoutAbs = self.vDev.get('metrics:timeout');
+    if (typeof(timeoutAbs) === 'number') {
+        console.log('[MotionTrigger] Restart timeout');
+        var timeoutRel = timeoutAbs - new Date().getTime();
+        if (timeoutRel <= 0) {
+            self.switchDevice(false);
+        } else {
+            self.timeout = setTimeout(
+                _.bind(self.switchDevice,self,false),
+                timeoutRel
+            );
+        }
+    } else if (self.vDev.get('metrics:triggered')) {
+        console.log('[MotionTrigger] Triggered');
+        self.triggerSensor();
+    }
+    
     _.each(self.config.securitySensors,function(deviceId) {
         var deviceObject  = self.controller.devices.get(deviceId);
         if (deviceObject === null) {
@@ -93,10 +112,6 @@ MotionTrigger.prototype.initCallback = function() {
             deviceObject.on('change:metrics:level',self.callback);
         }
     });
-
-    if (self.vDev.get('metrics:triggered')) {
-        self.triggerSensor();
-    }
 };
 
 MotionTrigger.prototype.stop = function() {
@@ -189,15 +204,18 @@ MotionTrigger.prototype.checkInterval = function() {
 MotionTrigger.prototype.untriggerDevice = function() {
     var self = this;
     
-    console.log('[MotionTrigger] Untriggered security sensor');
-
     if (self.config.timeout > 0) {
+        console.log('[MotionTrigger] Untriggered security sensor. Starting timeout');
+        var timeoutRel = parseInt(self.config.timeout) * 1000;
+        var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
         self.timeout = setTimeout(
             _.bind(self.switchDevice,self,false),
-            (parseInt(self.config.timeout) * 1000)
+            timeoutRel
         );
+        self.vDev.set('metrics:timeout',timeoutAbs);
     } else {
+        console.log('[MotionTrigger] Untriggered security sensor. Turning off');
         self.switchDevice(false);
     }
 };
@@ -347,6 +365,7 @@ MotionTrigger.prototype.resetTimeout = function() {
         clearTimeout(self.timeout);
         self.timeout = undefined;
     }
+    self.vDev.set('metrics:timeout',null);
 };
 
 // Condition comparison helper
