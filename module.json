@@ -1,6 +1,6 @@
 {
    "author" : "Maroš Kollár",
-   "category" : "automation",
+   "category" : "complex_applications",
    "defaults" : {
       "description" : "__description__",
       "recheckPreconditions" : false,
