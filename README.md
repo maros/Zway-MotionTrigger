@@ -47,6 +47,14 @@ Trigger duration after the last security sensor has been untripped.
 Set the dimmer levels. The value may either be a number, or a JavaScript
 function that calculates the levels (eg. based on time, luminosity, ...)
 
+## timeActive
+
+Multiple periods when the trigger should be activated
+
+## timeActive.start, timeActive.end
+
+Time in HH:MM format
+
 # Virtual Devices
 
 This module creates a virtual binary switch device to turn on/off the trigger.
