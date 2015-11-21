@@ -24,7 +24,10 @@ Security sensors that trigger lights
 
 ## preconditions
 
-Multiple optional conditions to check before a switch will be triggered.
+Multiple optional conditions to check before a switch will be triggered. 
+Luminosity sensors, and the Astronomy module from 
+https://github.com/maros/Zway-Astronomy are particularly well suited to 
+be included in such condition checks.
 
 ## preconditions.device
 
@@ -40,7 +43,8 @@ Value to be used for the check
 
 ## duration
 
-Trigger duration after the last security sensor has been untripped.
+Trigger timeout duration after the last security sensor has been untripped.
+(in seconds)
 
 ## dimmerLevel
 
@@ -49,7 +53,7 @@ function that calculates the levels (eg. based on time, luminosity, ...)
 
 ## timeActive
 
-Multiple periods when the trigger should be activated
+List of time periods when the trigger should be activated
 
 ## timeActive.start, timeActive.end
 
