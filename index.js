@@ -274,8 +274,10 @@ MotionTrigger.prototype.checkPrecondition = function() {
         var dateNow = new Date();
         _.each(self.config.timeActive,function(element) {
             if (timeCheck !== true) {
+                var start   = self.calcTime(element.start);
+                var end     = self.calcTime(element.end);
                 if (end < start) {
-                    if (end.getDate() == dateNow.getDate()) {
+                    if (start > dateNow) {
                         var startHour   = start.getHours();
                         var startMinute = start.getMinutes();
                         start.setHours(startHour - 24);
