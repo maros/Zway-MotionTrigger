@@ -300,7 +300,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     var self = this;
     
     var level = self.vDev.get('metrics:level');
-    var dimmerLevel = 255;
+    var dimmerLevel = 99;
     if (level === 'on' && mode === true) {
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
         
@@ -318,11 +318,11 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                 dimmerLevel = parseInt(eval(self.dimmerLevel));
             } catch (e) {
                 console.error('[MotionTrigger] Could not calculate dimmer level: '+e);
-                dimmerLevel = 255;
+                dimmerLevel = 99;
             }
         }
-        if (dimmerLevel > 255) {
-            dimmerLevel = 255;
+        if (dimmerLevel > 99) {
+            dimmerLevel = 99;
         }
     } else {
         self.resetInterval();
