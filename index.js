@@ -165,7 +165,7 @@ MotionTrigger.prototype.triggerSensor = function() {
         // Check extra sensors
         var precondition = self.checkPrecondition();
         
-        console.log('[MotionTrigger] Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+')');
+        console.log('[MotionTrigger] Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+', triggered:'+triggered+')');
         
         // Trigger light
         if (precondition === true 
@@ -267,7 +267,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
         }
     });
     
-    console.log('[MotionTrigger] check'+check);
+    console.log('[MotionTrigger] precond: '+check);
     
     if (check === true) {
         var timeCheck;
@@ -277,22 +277,25 @@ MotionTrigger.prototype.checkPrecondition = function() {
                 var start   = self.calcTime(element.start);
                 var end     = self.calcTime(element.end);
                 if (end < start) {
-                    if (start > dateNow) {
-                        var startHour   = start.getHours();
-                        var startMinute = start.getMinutes();
-                        start.setHours(startHour - 24);
-                        // Now fix time jump on DST
-                        start.setHours(startHour,startMinute);
-                    } else {
+                    if (dateNow > start) {
                         var endHour     = end.getHours();
                         var endMinute   = end.getMinutes();
                         end.setHours(endHour + 24);
                         // Now fix time jump on DST
                         end.setHours(endHour,endMinute);
+                    } else if (end > dateNow) {
+                        var startHour   = start.getHours();
+                        var startMinute = start.getMinutes();
+                        start.setHours(startHour - 24);
+                        // Now fix time jump on DST
+                        start.setHours(startHour,startMinute);
                     }
                 }
-                if (dateNow > start && dateNow < end) {
+                
+                if (dateNow >= start && dateNow <= end) {
                     timeCheck = true;
+                } else {
+                    timeCheck = false;
                 }
             }
         });
@@ -300,6 +303,8 @@ MotionTrigger.prototype.checkPrecondition = function() {
             check = false;
         }
     }
+    
+    console.log('[MotionTrigger] time: '+check);
     
     return check;
 }
