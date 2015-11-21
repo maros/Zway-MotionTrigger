@@ -272,20 +272,19 @@ MotionTrigger.prototype.checkPrecondition = function() {
     if (check === true) {
         var dateNow = new Date();
         _.each(self.config.timeActive,function(element) {
-            var start   = self.calcTime(element.start);
-            var end     = self.calcTime(element.end);
-
             if (end < start) {
-                var hour    = end.getHours();
-                var minute  = end.getMinutes();
                 if (end.getDate() == dateNow.getDate()) {
-                    start.setHours(start.getHours() - 24);
+                    var startHour   = start.getHours();
+                    var startMinute = start.getMinutes();
+                    start.setHours(startHour - 24);
                     // Now fix time jump on DST
-                    start.setHours(hour,minute);
+                    start.setHours(startHour,startMinute);
                 } else {
-                    end.setHours(end.getHours() + 24);
+                    var endHour     = end.getHours();
+                    var endMinute   = end.getMinutes();
+                    end.setHours(endHour + 24);
                     // Now fix time jump on DST
-                    end.setHours(hour,minute);
+                    end.setHours(endHour,endMinute);
                 }
             }
             if (dateNow > end || dateNow < start) {
