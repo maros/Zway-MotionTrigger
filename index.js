@@ -267,17 +267,26 @@ MotionTrigger.prototype.checkPrecondition = function() {
         }
     });
     
+    console.log('[MotionTrigger] check'+check);
+    
     if (check === true) {
         var dateNow = new Date();
         _.each(self.config.timeActive,function(element) {
             var start   = self.calcTime(element.start);
             var end     = self.calcTime(element.end);
+
             if (end < start) {
                 var hour    = end.getHours();
                 var minute  = end.getMinutes();
-                end.setHours(end.getHours() + 24);
-                // Now fix time jump on DST
-                end.setHours(hour,minute);
+                if (end.getDate() == dateNow.getDate()) {
+                    start.setHours(start.getHours() - 24);
+                    // Now fix time jump on DST
+                    start.setHours(hour,minute);
+                } else {
+                    end.setHours(end.getHours() + 24);
+                    // Now fix time jump on DST
+                    end.setHours(hour,minute);
+                }
             }
             if (dateNow > end || dateNow < start) {
                 check = false;
