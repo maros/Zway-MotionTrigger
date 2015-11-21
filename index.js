@@ -291,7 +291,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
                         end.setHours(endHour,endMinute);
                     }
                 }
-                if (dateNow > start || dateNow < end) {
+                if (dateNow > start && dateNow < end) {
                     timeCheck = true;
                 }
             }
