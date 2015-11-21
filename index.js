@@ -270,27 +270,33 @@ MotionTrigger.prototype.checkPrecondition = function() {
     console.log('[MotionTrigger] check'+check);
     
     if (check === true) {
+        var timeCheck;
         var dateNow = new Date();
         _.each(self.config.timeActive,function(element) {
-            if (end < start) {
-                if (end.getDate() == dateNow.getDate()) {
-                    var startHour   = start.getHours();
-                    var startMinute = start.getMinutes();
-                    start.setHours(startHour - 24);
-                    // Now fix time jump on DST
-                    start.setHours(startHour,startMinute);
-                } else {
-                    var endHour     = end.getHours();
-                    var endMinute   = end.getMinutes();
-                    end.setHours(endHour + 24);
-                    // Now fix time jump on DST
-                    end.setHours(endHour,endMinute);
+            if (timeCheck !== true) {
+                if (end < start) {
+                    if (end.getDate() == dateNow.getDate()) {
+                        var startHour   = start.getHours();
+                        var startMinute = start.getMinutes();
+                        start.setHours(startHour - 24);
+                        // Now fix time jump on DST
+                        start.setHours(startHour,startMinute);
+                    } else {
+                        var endHour     = end.getHours();
+                        var endMinute   = end.getMinutes();
+                        end.setHours(endHour + 24);
+                        // Now fix time jump on DST
+                        end.setHours(endHour,endMinute);
+                    }
+                }
+                if (dateNow > start || dateNow < end) {
+                    timeCheck = true;
                 }
             }
-            if (dateNow > end || dateNow < start) {
-                check = false;
-            }
         });
+        if (timeCheck === false) {
+            check = false;
+        }
     }
     
     return check;
