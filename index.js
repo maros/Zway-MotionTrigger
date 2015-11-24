@@ -41,7 +41,7 @@ MotionTrigger.prototype.init = function init(config) {
             metrics: {
                 probeTitle: 'controller',
                 level: 'off',
-                title: langFile.title,
+                title: langFile.title+'_'+self.id,
                 icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png",
                 triggered: false,
                 timeout: null
