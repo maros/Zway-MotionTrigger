@@ -17,6 +17,7 @@ function MotionTrigger (id, controller) {
     this.callback   = undefined;
     this.interval   = undefined;
     this.dimmerLevel= undefined;
+    this.moduleName = "MotionTrigger";
 }
 
 inherits(MotionTrigger, AutomationModule);
@@ -27,15 +28,15 @@ _module = MotionTrigger;
 // --- Module instance initialized
 // ----------------------------------------------------------------------------
 
-MotionTrigger.prototype.init = function (config) {
+MotionTrigger.prototype.init = function init(config) {
     MotionTrigger.super_.prototype.init.call(this, config);
     var self = this;
     
-    var langFile = self.controller.loadModuleLang("MotionTrigger");
+    var langFile = self.controller.loadModuleLang(self.moduleName);
     
     // Create vdev
     self.vDev = this.controller.devices.create({
-        deviceId: "MotionTrigger_" + self.id,
+        deviceId: self.moduleName+'_' + self.id,
         defaults: {
             metrics: {
                 probeTitle: 'controller',
@@ -83,13 +84,24 @@ MotionTrigger.prototype.init = function (config) {
     setTimeout(_.bind(self.initCallback,self),10000);
 };
 
-MotionTrigger.prototype.initCallback = function() {
+MotionTrigger.prototype.log = function log(msg) {
+    var self = this;
+    if (undefined === msg) return;
+    if (null !== log.caller) {
+        console.log('['+self.moduleName+'_'+self.id+'] ['+log.caller.name+'] '+msg);
+    } else {
+        console.log('['+self.moduleName+'_'+self.id+'] '+msg);
+    }
+};
+
+
+MotionTrigger.prototype.initCallback = function initCallback() {
     var self = this;
 
     // Correctly init after restart
     var timeoutAbs = self.vDev.get('metrics:timeout');
     if (typeof(timeoutAbs) === 'number') {
-        console.log('[MotionTrigger] Restart timeout');
+        self.log('Restart timeout');
         var timeoutRel = timeoutAbs - new Date().getTime();
         if (timeoutRel <= 0) {
             self.switchDevice(false);
@@ -100,21 +112,21 @@ MotionTrigger.prototype.initCallback = function() {
             );
         }
     } else if (self.vDev.get('metrics:triggered')) {
-        console.log('[MotionTrigger] Triggered');
+        self.log('Triggered');
         self.triggerSensor();
     }
     
     _.each(self.config.securitySensors,function(deviceId) {
         var deviceObject  = self.controller.devices.get(deviceId);
         if (deviceObject === null) {
-            console.error('[MotionTrigger] Device not found '+deviceId);
+            console.error('Device not found '+deviceId);
         } else {
             deviceObject.on('change:metrics:level',self.callback);
         }
     });
 };
 
-MotionTrigger.prototype.stop = function() {
+MotionTrigger.prototype.stop = function stop() {
     var self = this;
     
     _.each(self.config.securitySensors,function(deviceId) {
@@ -140,7 +152,7 @@ MotionTrigger.prototype.stop = function() {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
-MotionTrigger.prototype.triggerSensor = function() {
+MotionTrigger.prototype.triggerSensor = function triggerSensor() {
     var self = this;
     
     // Check trigger device on
@@ -165,7 +177,7 @@ MotionTrigger.prototype.triggerSensor = function() {
         // Check extra sensors
         var precondition = self.checkPrecondition();
         
-        console.log('[MotionTrigger] Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+', triggered:'+triggered+')');
+        self.log('Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+', triggered:'+triggered+')');
         
         // Trigger light
         if (precondition === true 
@@ -184,7 +196,7 @@ MotionTrigger.prototype.triggerSensor = function() {
     }
 };
 
-MotionTrigger.prototype.checkInterval = function() {
+MotionTrigger.prototype.checkInterval = function checkInterval() {
     var self = this;
     
     // Check trigger device on, triggered and no timeout
@@ -195,17 +207,17 @@ MotionTrigger.prototype.checkInterval = function() {
     }
     
     var check = self.checkPrecondition();
-    console.log('[DeviceMove] Recheck interval '+check);
+    self.log('[DeviceMove] Recheck interval '+check);
     if (! check) {
         self.untriggerDevice();
     }
 };
 
-MotionTrigger.prototype.untriggerDevice = function() {
+MotionTrigger.prototype.untriggerDevice = function untriggerDevice() {
     var self = this;
     
     if (self.config.timeout > 0) {
-        console.log('[MotionTrigger] Untriggered security sensor. Starting timeout');
+        self.log('Untriggered security sensor. Starting timeout');
         var timeoutRel = parseInt(self.config.timeout) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
@@ -215,13 +227,13 @@ MotionTrigger.prototype.untriggerDevice = function() {
         );
         self.vDev.set('metrics:timeout',timeoutAbs);
     } else {
-        console.log('[MotionTrigger] Untriggered security sensor. Turning off');
+        self.log('Untriggered security sensor. Turning off');
         self.switchDevice(false);
     }
 };
 
 // Helper method to check any device in list of devices if on
-MotionTrigger.prototype.checkDevice = function(devices) {
+MotionTrigger.prototype.checkDevice = function checkDevice(devices) {
     var self = this;
     
     var status = false;
@@ -243,7 +255,7 @@ MotionTrigger.prototype.checkDevice = function(devices) {
                 status = true;
             }
         } else {
-            console.error('[MotionTrigger] Unspported device type '+deviceObject.get('deviceType'));
+            console.error('Unspported device type '+deviceObject.get('deviceType'));
             return;
         }
     });
@@ -252,7 +264,7 @@ MotionTrigger.prototype.checkDevice = function(devices) {
 };
 
 // Helper to check preconditions
-MotionTrigger.prototype.checkPrecondition = function() {
+MotionTrigger.prototype.checkPrecondition = function checkPrecondition() {
     var self = this;
     
     var check = true;
@@ -267,7 +279,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
         }
     });
     
-    console.log('[MotionTrigger] precond: '+check);
+    self.log('precond: '+check);
     
     if (check === true) {
         var timeCheck;
@@ -304,12 +316,12 @@ MotionTrigger.prototype.checkPrecondition = function() {
         }
     }
     
-    console.log('[MotionTrigger] time: '+check);
+    self.log('time: '+check);
     
     return check;
 }
 
-MotionTrigger.prototype.switchDevice = function(mode) {
+MotionTrigger.prototype.switchDevice = function switchDevice(mode) {
     var self = this;
     
     var level = self.vDev.get('metrics:level');
@@ -330,7 +342,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
             try {
                 dimmerLevel = parseInt(eval(self.dimmerLevel));
             } catch (e) {
-                console.error('[MotionTrigger] Could not calculate dimmer level: '+e);
+                console.error('Could not calculate dimmer level: '+e);
                 dimmerLevel = 99;
             }
         }
@@ -344,7 +356,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     self.resetTimeout();
     self.vDev.set("metrics:triggered",mode);
     
-    console.log('[MotionTrigger] Turining '+(mode ? 'on':'off'));
+    self.log('Turining '+(mode ? 'on':'off'));
     
     _.each(self.config.lights,function(deviceId) {
         var deviceObject = self.controller.devices.get(deviceId);
@@ -369,7 +381,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
 };
 
 // Reset interval helper
-MotionTrigger.prototype.resetInterval = function() {
+MotionTrigger.prototype.resetInterval = function resetInterval() {
     var self = this;
     
     if (typeof(self.interval) === 'undefined') {
@@ -408,7 +420,7 @@ MotionTrigger.prototype.op = function (dval, op, val) {
     return null; // error!!  
 };
 
-MotionTrigger.prototype.calcTime = function(timeString) {
+MotionTrigger.prototype.calcTime = function calcTime(timeString) {
     var self = this;
     
     if (typeof(timeString) !== 'string') {
