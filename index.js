@@ -46,7 +46,7 @@ MotionTrigger.prototype.init = function (config) {
             }
         },
         overlay: {
-            probeType: 'MotionTriggerController'
+            probeType: 'MotionTriggerController',
             deviceType: 'switchBinary'
         },
         handler: function(command, args) {
@@ -148,10 +148,6 @@ MotionTrigger.prototype.triggerSensor = function() {
         return;
     }
     
-    // Reset timeouts & intervals if any
-    self.resetTimeout();
-    self.resetInterval();
-    
     // Check security device status
     var sensors = self.checkDevice(self.config.securitySensors);
     
@@ -171,14 +167,18 @@ MotionTrigger.prototype.triggerSensor = function() {
         if (precondition === true 
             && lights === false
             && extraLights == false) {
+            self.resetTimeout();
             self.switchDevice(true);
         // Retrigger light
         } else if (triggered === true && (! self.config.recheckPreconditions || precondition === true)) {
+            // Reset timeouts
+            self.resetTimeout();
             self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
         }
     // Untriggered sensor
     } else if (sensors === false) {
-        if (self.vDev.get("metrics:triggered") === true) {
+        if (self.vDev.get("metrics:triggered") === true
+            && typeof(self.timeout) === 'undefined') {
             self.untriggerDevice();
         }
     }
@@ -204,11 +204,15 @@ MotionTrigger.prototype.checkInterval = function() {
 MotionTrigger.prototype.untriggerDevice = function() {
     var self = this;
     
+    self.resetInterval();
+    self.resetTimeout();
+    
     if (self.config.timeout > 0) {
         console.log('[MotionTrigger] Untriggered security sensor. Starting timeout');
         var timeoutRel = parseInt(self.config.timeout) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
+        self.resetTimeout();
         self.timeout = setTimeout(
             _.bind(self.switchDevice,self,false),
             timeoutRel
@@ -318,6 +322,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
         
         if (self.config.recheckPreconditions) {
+            self.resetInterval();
             self.interval = setInterval(
                 _.bind(self.checkInterval,self),
                 (1000 * 30)
