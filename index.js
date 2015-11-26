@@ -38,7 +38,6 @@ MotionTrigger.prototype.init = function (config) {
         deviceId: "MotionTrigger_" + self.id,
         defaults: {
             metrics: {
-                probeTitle: 'controller',
                 level: 'off',
                 title: langFile.title,
                 icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png",
@@ -47,6 +46,7 @@ MotionTrigger.prototype.init = function (config) {
             }
         },
         overlay: {
+            probeType: 'MotionTriggerController'
             deviceType: 'switchBinary'
         },
         handler: function(command, args) {
@@ -64,7 +64,7 @@ MotionTrigger.prototype.init = function (config) {
                     self.switchDevice(false);
                 }
             } else if (command === 'on') {
-                // Check the condition and tigger imediately
+                // Check the condition and trigger immediately
                 self.triggerSensor();
             }
         },
