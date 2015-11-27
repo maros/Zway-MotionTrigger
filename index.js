@@ -349,7 +349,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     self.resetTimeout();
     self.vDev.set("metrics:triggered",mode);
     
-    console.log('[MotionTrigger] Turining '+(mode ? 'on':'off'));
+    console.log('[MotionTrigger] Turning '+(mode ? 'on':'off'));
     
     _.each(self.config.lights,function(deviceId) {
         var deviceObject = self.controller.devices.get(deviceId);
