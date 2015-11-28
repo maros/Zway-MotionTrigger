@@ -16,5 +16,11 @@
    "time_start_label" : "Start",
    "timeout_helper" : "Keep triggered delay after sensor was untripped",
    "timeout_label" : "Trigger timeout (seconds)",
-   "title" : "Smart light triggers"
+   "title" : "Smart light triggers",
+   "dyn_dim_label" : "Dynamic Dimmer Level",
+   "lum_device_label" : "Light Sensor",
+   "min_lum_label" : "Minimum Light Level",
+   "max_lum_label" : "Maximum Light Level",
+   "min_dim_label" : "Minimum Dimming Level",
+   "max_dim_label" : "Maximum Dimming Level"
 }

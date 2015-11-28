@@ -90,10 +90,35 @@
             "label" : "__security_sensors_label__",
             "order" : 1
          },
+        "dynDim": {
+          "label" : "__dyn_dim_label__",
+          "order" : 8,
+          "fields": {
+            "lum_device": {
+              "datasource": "namespaces",
+              "field": "devices",
+              "label": "__lum_device_label__",
+              "optionLabels": "namespaces:devices_sensorMultilevel:deviceName",
+              "type": "select"
+            },
+            "min_lum": {
+              "label": "__min_lum_label__"
+            },
+            "max_lum": {
+              "label": "__max_lum_label__"
+            },
+            "min_dim": {
+              "label": "__min_dim_label__"
+            },
+            "max_dim": {
+              "label": "__max_dim_label__"
+            }
+          }
+        },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
-            "order" : 8
+            "order" : 9
          },
          "timeActive": {
              "label" : "__time_label__",
@@ -193,6 +218,28 @@
             "minItems" : 1,
             "type" : "array",
             "uniqueItems" : true
+         },
+         "dynDim": {
+            "type": "object",
+            "properties": {
+               "lum_device": {
+                  "datasource": "namespaces",
+                  "field": "enum",
+                  "enum": "namespaces:devices_sensorMultilevel:deviceId"
+               },
+               "min_lum": {
+                  "type": "number"
+               },
+               "max_lum": {
+                  "type": "number"
+               },
+               "min_dim": {
+                  "type": "number"
+               },
+               "max_dim": {
+                  "type": "number"
+               }
+            }
          },
          "timeout" : {
             "minimum" : 1,

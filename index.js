@@ -18,6 +18,7 @@ function MotionTrigger (id, controller) {
     this.interval   = undefined;
     this.dimmerLevel= undefined;
     this.moduleName = "MotionTrigger";
+    this.dynDim     = false;
 }
 
 inherits(MotionTrigger, AutomationModule);
@@ -79,7 +80,7 @@ MotionTrigger.prototype.init = function init(config) {
             self.dimmerLevel = parseInt(self.dimmerLevel);
         }
     }
-    
+
     self.callback = _.bind(self.triggerSensor,self);
     setTimeout(_.bind(self.initCallback,self),10000);
 };
@@ -124,6 +125,14 @@ MotionTrigger.prototype.initCallback = function initCallback() {
             deviceObject.on('change:metrics:level',self.callback);
         }
     });
+
+    if (parseInt(self.config.dynDim.min_lum) < (parseInt(self.config.dynDim.max_lum))) {
+        var lightSensor = self.controller.devices.get(self.config.dynDim.lum_device);
+        if (null !== lightSensor) {
+            self.log('using dynamic dimming with '+self.config.dynDim.lum_device);
+            self.dynDim = true;
+        }
+    }
 };
 
 MotionTrigger.prototype.stop = function stop() {
@@ -317,9 +326,35 @@ MotionTrigger.prototype.checkPrecondition = function checkPrecondition() {
     }
     
     self.log('time: '+check);
+
+    if (self.dynDim) {
+        var lightSensor = self.controller.devices.get(self.config.dynDim.lum_device);
+        if (null !== lightSensor) {
+            var luminosity = lightSensor.get('metrics:level');
+            self.dimmerLevel = self.calcDimLevel(luminosity);
+            self.log('determined dynamic dimming level to be '+self.dimmerLevel);
+        }
+    }
     
     return check;
-}
+};
+
+MotionTrigger.prototype.calcDimLevel = function calcDimLevel(luminosity) {
+    var self = this;
+
+    var lumWindow = (self.config.dynDim.max_lum-self.config.dynDim.min_lum);
+    var dimWindow = (self.config.dynDim.max_dim-self.config.dynDim.min_dim);
+
+    if (luminosity < self.config.dynDim.min_lum) luminosity = self.config.dynDim.min_lum;
+    if (luminosity > self.config.dynDim.max_lum) luminosity = self.config.dynDim.max_lum;
+
+    var lumPercent = (((luminosity-self.config.dynDim.min_lum)/lumWindow)*100);
+
+    var dimPercent = ((1/100)*((lumPercent*self.config.dynDim.max_dim)+(100*self.config.dynDim.min_dim)-(lumPercent*self.config.dynDim.max_dim)));
+    /*var dimPercent = (lumPercent*(dimWindow/(luminosity-self.config.dynDim.min_dim)));*/
+
+    return dimPercent;
+};
 
 MotionTrigger.prototype.switchDevice = function switchDevice(mode) {
     var self = this;
@@ -373,7 +408,7 @@ MotionTrigger.prototype.switchDevice = function switchDevice(mode) {
                 deviceObject.performCommand('exact',{ level: level });
             }
         } else {
-            console.error('[DeviceMove] Unspported device type '+deviceObject.get('deviceType'));
+            console.error('[DeviceMove] Unsupported device type '+deviceObject.get('deviceType'));
             return;
         }
         deviceObject.set('metrics:auto',mode);
