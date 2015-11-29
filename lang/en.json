@@ -22,5 +22,7 @@
    "min_lum_label" : "Minimum Light Level",
    "max_lum_label" : "Maximum Light Level",
    "min_dim_label" : "Minimum Dimming Level",
-   "max_dim_label" : "Maximum Dimming Level"
+   "max_dim_label" : "Maximum Dimming Level",
+   "max_lum_cutoff_label" : "Light Cutoff Level",
+   "max_lum_cutoff_helper" : "If the Light Sensor reading exceeds this value, the lights will not be triggered"
 }

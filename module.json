@@ -91,29 +91,33 @@
             "order" : 1
          },
         "dynDim": {
-          "label" : "__dyn_dim_label__",
-          "order" : 8,
-          "fields": {
-            "lum_device": {
-              "datasource": "namespaces",
-              "field": "devices",
-              "label": "__lum_device_label__",
-              "optionLabels": "namespaces:devices_sensorMultilevel:deviceName",
-              "type": "select"
-            },
-            "min_lum": {
-              "label": "__min_lum_label__"
-            },
-            "max_lum": {
-              "label": "__max_lum_label__"
-            },
-            "min_dim": {
-              "label": "__min_dim_label__"
-            },
-            "max_dim": {
-              "label": "__max_dim_label__"
-            }
-          }
+           "label" : "__dyn_dim_label__",
+           "order" : 8,
+           "fields": {
+              "lum_device": {
+                 "datasource": "namespaces",
+                 "field": "devices",
+                 "label": "__lum_device_label__",
+                 "optionLabels": "namespaces:devices_sensorMultilevel:deviceName",
+                 "type": "select"
+              },
+              "min_lum": {
+                 "label": "__min_lum_label__"
+              },
+              "max_lum": {
+                 "label": "__max_lum_label__"
+              },
+              "min_dim": {
+                 "label": "__min_dim_label__"
+              },
+              "max_dim": {
+                 "label": "__max_dim_label__"
+              },
+              "max_lum_cutoff": {
+                 "label": "__max_lum_cutoff_label__",
+                 "helper": "__max_lum_cutoff_helper__"
+              }
+           }
         },
          "timeout" : {
             "helper" : "__timeout_helper__",
@@ -237,6 +241,9 @@
                   "type": "number"
                },
                "max_dim": {
+                  "type": "number"
+               },
+               "max_lum_cutoff": {
                   "type": "number"
                }
             }

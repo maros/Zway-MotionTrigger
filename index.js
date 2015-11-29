@@ -13,12 +13,13 @@ function MotionTrigger (id, controller) {
     // Call superconstructor first (AutomationModule)
     MotionTrigger.super_.call(this, id, controller);
     
-    this.timeout    = undefined;
-    this.callback   = undefined;
-    this.interval   = undefined;
-    this.dimmerLevel= undefined;
-    this.moduleName = "MotionTrigger";
-    this.dynDim     = false;
+    this.timeout        = undefined;
+    this.callback       = undefined;
+    this.interval       = undefined;
+    this.dimmerLevel    = undefined;
+    this.moduleName     = "MotionTrigger";
+    this.dynDim         = false;
+    this.maxLumCutoff   = false;
 }
 
 inherits(MotionTrigger, AutomationModule);
@@ -126,11 +127,15 @@ MotionTrigger.prototype.initCallback = function initCallback() {
         }
     });
 
-    if (parseInt(self.config.dynDim.min_lum) < (parseInt(self.config.dynDim.max_lum))) {
-        var lightSensor = self.controller.devices.get(self.config.dynDim.lum_device);
-        if (null !== lightSensor) {
+    var lightSensor = self.controller.devices.get(self.config.dynDim.lum_device);
+    if (null !== lightSensor) {
+        if (parseInt(self.config.dynDim.min_lum) < (parseInt(self.config.dynDim.max_lum))) {
             self.log('using dynamic dimming with '+self.config.dynDim.lum_device);
             self.dynDim = true;
+        }
+        if (parseInt(self.config.dynDim.max_lum_cutoff) > 0) {
+            self.log('cutoff at maximum luminosity of '+self.config.dynDim.max_lum_cutoff+' with '+self.config.dynDim.lum_device);
+            self.maxLumCutoff = self.config.dynDim.max_lum_cutoff;
         }
     }
 };
@@ -324,7 +329,18 @@ MotionTrigger.prototype.checkPrecondition = function checkPrecondition() {
             check = false;
         }
     }
-    
+
+    if (self.maxLumCutoff) {
+        var lightSensor = self.controller.devices.get(self.config.dynDim.lum_device);
+        if (null !== lightSensor) {
+            var luminosity = lightSensor.get('metrics:level');
+            if (luminosity > self.maxLumCutoff && check !== false) {
+                self.log('maxLumCutoff prevents triggering');
+                check = false;
+            }
+        }
+    }
+
     self.log('time: '+check);
 
     if (self.dynDim) {
@@ -335,7 +351,8 @@ MotionTrigger.prototype.checkPrecondition = function checkPrecondition() {
             self.log('determined dynamic dimming level to be '+self.dimmerLevel);
         }
     }
-    
+
+
     return check;
 };
 
