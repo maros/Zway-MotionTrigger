@@ -378,7 +378,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
 MotionTrigger.prototype.resetInterval = function() {
     var self = this;
     
-    if (typeof(self.interval) !== 'undefined') {
+    if (typeof(self.interval) === 'undefined') {
         clearInterval(self.interval);
         self.interval = undefined;
     }
