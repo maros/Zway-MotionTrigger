@@ -82,7 +82,10 @@ MotionTrigger.prototype.init = function (config) {
         }
     }
     
-    self.callback = _.bind(self.triggerSensor,self);
+    self.callbackSensor = _.bind(self.handleSensor,self);
+    self.callbackEvent = _.bind(self.handleEvent,self);
+    
+    self.controller.on('motion.trigger',self.callbackEvent);
     setTimeout(_.bind(self.initCallback,self),10000);
 };
 
@@ -112,7 +115,7 @@ MotionTrigger.prototype.initCallback = function() {
         if (deviceObject === null) {
             console.error('[MotionTrigger] Device not found '+deviceId);
         } else {
-            deviceObject.on('change:metrics:level',self.callback);
+            deviceObject.on('change:metrics:level',self.callbackSensor);
         }
     });
 };
@@ -123,11 +126,13 @@ MotionTrigger.prototype.stop = function() {
     _.each(self.config.securitySensors,function(deviceId) {
         var deviceObject  = self.controller.devices.get(deviceId);
         if (deviceObject !== null) {
-            deviceObject.off('change:metrics:level',self.callback);
+            deviceObject.off('change:metrics:level',self.callbackSensor);
         }
     });
     
-    self.callback = undefined;
+    self.controller.off('motion.trigger',self.callbackEvent);
+    self.callbackEvent = undefined;
+    self.callbackSensor = undefined;
     
     self.resetInterval();
     self.resetTimeout();
@@ -136,6 +141,7 @@ MotionTrigger.prototype.stop = function() {
         self.controller.devices.remove(self.vDev.id);
         self.vDev = undefined;
     }
+    
     MotionTrigger.super_.prototype.stop.call(this);
 };
 
@@ -143,7 +149,25 @@ MotionTrigger.prototype.stop = function() {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
-MotionTrigger.prototype.triggerSensor = function() {
+MotionTrigger.prototype.handleEvent = function(event) {
+    var self = this;
+    
+    if (event.id === self.id) {
+        return;
+    }
+    
+    if (event.mode === 'off') {
+        self.handleChange('on');
+    }
+};
+
+MotionTrigger.prototype.handleSensor = function(vDev) {
+    var self = this;
+    
+    self.handleChange(vDev.get('metrics:level'));
+};
+
+MotionTrigger.prototype.handleChange = function(mode) {
     var self = this;
     
     // Check trigger device on
@@ -371,6 +395,13 @@ MotionTrigger.prototype.switchDevice = function(mode) {
             return;
         }
         deviceObject.set('metrics:auto',mode);
+    });
+    
+    self.controller.emit('motion.trigger',{ 
+        id:         self.id,
+        title:      self.vDev.get('metrics:title'),
+        location:   self.vDev.get('metrics:location'),
+        mode:       mode
     });
 };
 
