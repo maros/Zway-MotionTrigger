@@ -9,14 +9,17 @@ Description:
 
 ******************************************************************************/
 
+/* jshint evil:true */
+
 function MotionTrigger (id, controller) {
     // Call superconstructor first (AutomationModule)
     MotionTrigger.super_.call(this, id, controller);
     
-    this.timeout    = undefined;
-    this.callback   = undefined;
-    this.interval   = undefined;
-    this.dimmerLevel= undefined;
+    this.timeout        = undefined;
+    this.callbackEvent  = undefined;
+    this.callbackSensor = undefined;
+    this.interval       = undefined;
+    this.dimmerLevel    = undefined;
 }
 
 inherits(MotionTrigger, AutomationModule);
@@ -72,10 +75,10 @@ MotionTrigger.prototype.init = function (config) {
     });
     
     if (typeof(self.config.dimmerLevel) === 'string'
-        && self.config.dimmerLevel != '') {
+        && self.config.dimmerLevel !== '') {
         self.dimmerLevel = self.config.dimmerLevel;
         if (self.dimmerLevel.match('^\s*\d+\s*$')) {
-            self.dimmerLevel = parseInt(self.dimmerLevel);
+            self.dimmerLevel = parseInt(self.dimmerLevel,10);
         }
     }
     
@@ -166,11 +169,12 @@ MotionTrigger.prototype.triggerSensor = function() {
         // Trigger light
         if (precondition === true 
             && lights === false
-            && extraLights == false) {
+            && extraLights === false) {
             self.resetTimeout();
             self.switchDevice(true);
         // Retrigger light
-        } else if (triggered === true && (! self.config.recheckPreconditions || precondition === true)) {
+        } else if (triggered === true && 
+            (! self.config.recheckPreconditions || precondition === true)) {
             // Reset timeouts
             self.resetTimeout();
             self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
@@ -189,7 +193,7 @@ MotionTrigger.prototype.checkInterval = function() {
     
     // Check trigger device on, triggered and no timeout
     if (self.vDev.get('metrics:level') !== 'on'
-        || self.vDev.get('metrics:triggered') == false
+        || self.vDev.get('metrics:triggered') === false
         || typeof(self.timeout) !== 'undefined') {
         return;
     }
@@ -209,7 +213,7 @@ MotionTrigger.prototype.untriggerDevice = function() {
     
     if (self.config.timeout > 0) {
         console.log('[MotionTrigger] Untriggered security sensor. Starting timeout');
-        var timeoutRel = parseInt(self.config.timeout) * 1000;
+        var timeoutRel = parseInt(self.config.timeout,10) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
         self.resetTimeout();
@@ -247,7 +251,7 @@ MotionTrigger.prototype.checkDevice = function(devices) {
                 status = true;
             }
         } else {
-            console.error('[MotionTrigger] Unspported device type '+deviceObject.get('deviceType'));
+            console.error('[MotionTrigger] Unsupported device type '+deviceObject.get('deviceType'));
             return;
         }
     });
@@ -270,8 +274,6 @@ MotionTrigger.prototype.checkPrecondition = function() {
             check = false;
         }
     });
-    
-    console.log('[MotionTrigger] precond: '+check);
     
     if (check === true) {
         var timeCheck;
@@ -308,10 +310,8 @@ MotionTrigger.prototype.checkPrecondition = function() {
         }
     }
     
-    console.log('[MotionTrigger] time: '+check);
-    
     return check;
-}
+};
 
 MotionTrigger.prototype.switchDevice = function(mode) {
     var self = this;
@@ -333,7 +333,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
             dimmerLevel = self.dimmerLevel;
         } else if (typeof(self.dimmerLevel) === 'string') {
             try {
-                dimmerLevel = parseInt(eval(self.dimmerLevel));
+                dimmerLevel = parseInt(eval(self.dimmerLevel),10);
             } catch (e) {
                 console.error('[MotionTrigger] Could not calculate dimmer level: '+e);
                 dimmerLevel = 99;
@@ -346,6 +346,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         self.resetInterval();
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+level+".png");
     }
+    
     self.resetTimeout();
     self.vDev.set("metrics:triggered",mode);
     
@@ -424,8 +425,8 @@ MotionTrigger.prototype.calcTime = function(timeString) {
     if (!match) {
         return;
     }
-    var hour        = parseInt(match[1]);
-    var minute      = parseInt(match[2]);
+    var hour        = parseInt(match[1],10);
+    var minute      = parseInt(match[2],10);
     var dateCalc    = new Date();
     dateCalc.setHours(hour, minute);
     
