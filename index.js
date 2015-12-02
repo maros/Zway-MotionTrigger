@@ -175,18 +175,20 @@ MotionTrigger.prototype.handleChange = function(mode) {
         return;
     }
     
+    console.log('[MotionTrigger] Handle change to '+mode+' via '+self.id);
+    
     // Check security device status
-    var sensors = self.checkDevice(self.config.securitySensors);
+    var sensors     = self.checkDevice(self.config.securitySensors);
+    var triggered   = self.vDev.get('metrics:triggered');
     
     // Triggered sensor
-    if (sensors === true) {
+    if (sensors === true 
+        && mode === 'on') {
         // Check trigger lights on
-        var lights      = self.checkDevice(self.config.lights);
-        var extraLights = self.checkDevice(self.config.extraLights);
-        var triggered   = self.vDev.get('metrics:triggered');
-        
+        var lights          = self.checkDevice(self.config.lights);
+        var extraLights     = self.checkDevice(self.config.extraLights);
         // Check extra sensors
-        var precondition = self.checkPrecondition();
+        var precondition    = self.checkPrecondition();
         
         console.log('[MotionTrigger] Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+', triggered:'+triggered+')');
         
@@ -204,11 +206,11 @@ MotionTrigger.prototype.handleChange = function(mode) {
             self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
         }
     // Untriggered sensor
-    } else if (sensors === false) {
-        if (self.vDev.get("metrics:triggered") === true
-            && typeof(self.timeout) === 'undefined') {
-            self.untriggerDevice();
-        }
+    } else if (sensors === false 
+        && mode === 'off'
+        && triggered === true
+        && typeof(self.timeout) === 'undefined') {
+        self.untriggerDevice();
     }
 };
 
