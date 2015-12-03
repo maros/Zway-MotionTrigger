@@ -68,7 +68,7 @@ MotionTrigger.prototype.init = function (config) {
                 }
             } else if (command === 'on') {
                 // Check the condition and trigger immediately
-                self.triggerSensor();
+                self.handleChange('on');
             }
         },
         moduleId: self.id
@@ -107,7 +107,7 @@ MotionTrigger.prototype.initCallback = function() {
         }
     } else if (self.vDev.get('metrics:triggered')) {
         console.log('[MotionTrigger] Triggered');
-        self.triggerSensor();
+        self.handleChange('on');
     }
     
     _.each(self.config.securitySensors,function(deviceId) {
