@@ -157,7 +157,10 @@ MotionTrigger.prototype.handleEvent = function(event) {
     }
     
     if (event.mode === 'off') {
-        self.handleChange('on');
+        setTimeout(
+            _.bind(self.handleChange,self,'on'),
+            1000
+        );
     }
 };
 
