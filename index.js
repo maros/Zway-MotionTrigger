@@ -228,7 +228,7 @@ MotionTrigger.prototype.checkInterval = function() {
     }
     
     var check = self.checkPrecondition();
-    console.log('[DeviceMove] Recheck interval '+check);
+    console.log('[MotionTrigger] Recheck interval '+check);
     if (! check) {
         self.untriggerDevice();
     }
@@ -396,7 +396,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                 deviceObject.performCommand('exact',{ level: level });
             }
         } else {
-            console.error('[DeviceMove] Unspported device type '+deviceObject.get('deviceType'));
+            console.error('[MotionTrigger] Unspported device type '+deviceObject.get('deviceType'));
             return;
         }
         deviceObject.set('metrics:auto',mode);
