@@ -68,7 +68,12 @@ a device is currently triggered or not.
 
 # Events
 
-No events are emitted
+
+## light.on, light.off
+
+Emits an event whenever a light is switched on or off. ie. Allows other 
+motion triggers, to act immediately after one trigger has been switched
+off.
 
 # Installation
 

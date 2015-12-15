@@ -85,7 +85,7 @@ MotionTrigger.prototype.init = function (config) {
     self.callbackSensor = _.bind(self.handleSensor,self);
     self.callbackEvent = _.bind(self.handleEvent,self);
     
-    self.controller.on('motion.trigger',self.callbackEvent);
+    self.controller.on('light.off',self.callbackEventOff);
     setTimeout(_.bind(self.initCallback,self),10000);
 };
 
@@ -130,7 +130,7 @@ MotionTrigger.prototype.stop = function() {
         }
     });
     
-    self.controller.off('motion.trigger',self.callbackEvent);
+    self.controller.off('light.off',self.callbackEvent);
     self.callbackEvent = undefined;
     self.callbackSensor = undefined;
     
@@ -156,12 +156,10 @@ MotionTrigger.prototype.handleEvent = function(event) {
         return;
     }
     
-    if (event.mode === 'off') {
-        setTimeout(
-            _.bind(self.handleChange,self,'on'),
-            1000
-        );
-    }
+    setTimeout(
+        _.bind(self.handleChange,self,'on'),
+        1000
+    );
 };
 
 MotionTrigger.prototype.handleSensor = function(vDev) {
@@ -402,7 +400,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         deviceObject.set('metrics:auto',mode);
     });
     
-    self.controller.emit('motion.trigger',{ 
+    self.controller.emit('light.'+(mode ? 'on':'off'),{ 
         id:         self.id,
         title:      self.vDev.get('metrics:title'),
         location:   self.vDev.get('metrics:location'),
