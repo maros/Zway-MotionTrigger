@@ -85,7 +85,7 @@ MotionTrigger.prototype.init = function (config) {
     self.callbackSensor = _.bind(self.handleSensor,self);
     self.callbackEvent = _.bind(self.handleEvent,self);
     
-    self.controller.on('light.off',self.callbackEventOff);
+    self.controller.on('light.off',self.callbackEvent);
     setTimeout(_.bind(self.initCallback,self),10000);
 };
 
