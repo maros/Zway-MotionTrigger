@@ -7,7 +7,7 @@
       "timeout" : 180,
       "title" : "__title__"
    },
-   "dependencies" : [],
+   "dependencies" : ["BaseModule"],
    "homepage" : "http://k-1.com",
    "icon" : "icon_on.png",
    "maturity" : "stable",

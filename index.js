@@ -22,7 +22,7 @@ function MotionTrigger (id, controller) {
     this.dimmerLevel    = undefined;
 }
 
-inherits(MotionTrigger, AutomationModule);
+inherits(MotionTrigger, BaseModule);
 
 _module = MotionTrigger;
 
@@ -33,8 +33,6 @@ _module = MotionTrigger;
 MotionTrigger.prototype.init = function (config) {
     MotionTrigger.super_.prototype.init.call(this, config);
     var self = this;
-    
-    var langFile = self.controller.loadModuleLang("MotionTrigger");
     
     // Create vdev
     self.vDev = this.controller.devices.create({
@@ -95,7 +93,7 @@ MotionTrigger.prototype.initCallback = function() {
     // Correctly init after restart
     var timeoutAbs = self.vDev.get('metrics:timeout');
     if (typeof(timeoutAbs) === 'number') {
-        console.log('[MotionTrigger] Restart timeout');
+        self.log('Restart timeout');
         var timeoutRel = timeoutAbs - new Date().getTime();
         if (timeoutRel <= 0) {
             self.switchDevice(false);
@@ -106,14 +104,14 @@ MotionTrigger.prototype.initCallback = function() {
             );
         }
     } else if (self.vDev.get('metrics:triggered')) {
-        console.log('[MotionTrigger] Triggered');
+        self.log('Triggered');
         self.handleChange('on');
     }
     
     _.each(self.config.securitySensors,function(deviceId) {
         var deviceObject  = self.controller.devices.get(deviceId);
         if (deviceObject === null) {
-            console.error('[MotionTrigger] Device not found '+deviceId);
+            self.error('Device not found '+deviceId);
         } else {
             deviceObject.on('change:metrics:level',self.callbackSensor);
         }
@@ -176,7 +174,7 @@ MotionTrigger.prototype.handleChange = function(mode) {
         return;
     }
     
-    console.log('[MotionTrigger] Handle change to '+mode+' via '+self.id);
+    self.log('Handle change to '+mode+' via '+self.id);
     
     // Check security device status
     var sensors     = self.checkDevice(self.config.securitySensors);
@@ -191,7 +189,7 @@ MotionTrigger.prototype.handleChange = function(mode) {
         // Check extra sensors
         var precondition    = self.checkPrecondition();
         
-        console.log('[MotionTrigger] Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+', triggered:'+triggered+')');
+        self.log('Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+', triggered:'+triggered+')');
         
         // Trigger light
         if (precondition === true 
@@ -226,7 +224,7 @@ MotionTrigger.prototype.checkInterval = function() {
     }
     
     var check = self.checkPrecondition();
-    console.log('[MotionTrigger] Recheck interval '+check);
+    self.log('Recheck interval '+check);
     if (! check) {
         self.untriggerDevice();
     }
@@ -239,7 +237,7 @@ MotionTrigger.prototype.untriggerDevice = function() {
     self.resetTimeout();
     
     if (self.config.timeout > 0) {
-        console.log('[MotionTrigger] Untriggered security sensor. Starting timeout');
+        self.log('Untriggered security sensor. Starting timeout');
         var timeoutRel = parseInt(self.config.timeout,10) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
@@ -250,7 +248,7 @@ MotionTrigger.prototype.untriggerDevice = function() {
         );
         self.vDev.set('metrics:timeout',timeoutAbs);
     } else {
-        console.log('[MotionTrigger] Untriggered security sensor. Turning off');
+        self.log('Untriggered security sensor. Turning off');
         self.switchDevice(false);
     }
 };
@@ -307,8 +305,8 @@ MotionTrigger.prototype.checkPrecondition = function() {
         var dateNow = new Date();
         _.each(self.config.timeActive,function(element) {
             if (timeCheck !== true) {
-                var start   = self.calcTime(element.start);
-                var end     = self.calcTime(element.end);
+                var start   = self.parseTime(element.start);
+                var end     = self.parseTime(element.end);
                 if (end < start) {
                     if (dateNow > start) {
                         var endHour     = end.getHours();
@@ -377,7 +375,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     self.resetTimeout();
     self.vDev.set("metrics:triggered",mode);
     
-    console.log('[MotionTrigger] Turning '+(mode ? 'on':'off'));
+    self.log('Turning '+(mode ? 'on':'off'));
     
     _.each(self.config.lights,function(deviceId) {
         var deviceObject = self.controller.devices.get(deviceId);
@@ -448,23 +446,3 @@ MotionTrigger.prototype.op = function (dval, op, val) {
     return null; // error!!  
 };
 
-MotionTrigger.prototype.calcTime = function(timeString) {
-    var self = this;
-    
-    if (typeof(timeString) !== 'string') {
-        return;
-    }
-    
-    var match = timeString.match(/^(\d{1,2}):(\d{1,2})$/);
-    if (!match) {
-        return;
-    }
-    var hour        = parseInt(match[1],10);
-    var minute      = parseInt(match[2],10);
-    var dateCalc    = new Date();
-    dateCalc.setHours(hour, minute);
-    
-    return dateCalc;
-};
-
- 
