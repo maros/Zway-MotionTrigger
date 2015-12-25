@@ -81,7 +81,8 @@ MotionTrigger.prototype.init = function (config) {
     }
     
     self.callbackSensor = _.bind(self.handleSensor,self);
-    self.callbackEvent = _.bind(self.handleEvent,self);
+    self.callbackEvent  = _.bind(self.handleEvent,self);
+    self.callbackLight  = _.bind(self.handleLight,self);
     
     self.controller.on('light.off',self.callbackEvent);
     setTimeout(_.bind(self.initCallback,self),10000);
@@ -111,6 +112,9 @@ MotionTrigger.prototype.initCallback = function() {
     self.processDeviceList(self.config.securitySensors,function(deviceObject) {
         deviceObject.on('change:metrics:level',self.callbackSensor);
     });
+    
+    self.processDeviceList(self.config.lights,function(deviceObject) {
+        deviceObject.on('change:metrics:level',self.callbackLight);
     });
 };
 
@@ -120,11 +124,16 @@ MotionTrigger.prototype.stop = function() {
     self.processDeviceList(self.config.securitySensors,function(deviceObject) {
         deviceObject.off('change:metrics:level',self.callbackSensor);
     });
+    
+    self.processDeviceList(self.config.lights,function(deviceObject) {
+        deviceObject.off('change:metrics:level',self.callbackLight);
     });
     
     self.controller.off('light.off',self.callbackEvent);
-    self.callbackEvent = undefined;
+    
+    self.callbackEvent  = undefined;
     self.callbackSensor = undefined;
+    self.callbackLight  = undefined;
     
     self.resetInterval();
     self.resetTimeout();
@@ -140,6 +149,25 @@ MotionTrigger.prototype.stop = function() {
 // ----------------------------------------------------------------------------
 // --- Module methods
 // ----------------------------------------------------------------------------
+
+MotionTrigger.prototype.handleLight = function(vDev) {
+    var self = this;
+    
+    var triggered = self.vDev.get('metrics:triggered');
+    
+    if (triggered) {
+        var lightsOn = false;
+        self.processDeviceList(self.config.lights,function(deviceObject) {
+            if (deviceObject.get('metrics:level') === 'on') {
+                lightsOn = true;
+            }
+        });
+        
+        if (lightsOn === false) {
+            self.switchDevice(false);
+        }
+    }
+};
 
 MotionTrigger.prototype.handleEvent = function(event) {
     var self = this;
@@ -235,7 +263,6 @@ MotionTrigger.prototype.untriggerDevice = function() {
         var timeoutRel = parseInt(self.config.timeout,10) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
-        self.resetTimeout();
         self.timeout = setTimeout(
             _.bind(self.switchDevice,self,false),
             timeoutRel
