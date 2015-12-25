@@ -108,24 +108,18 @@ MotionTrigger.prototype.initCallback = function() {
         self.handleChange('on');
     }
     
-    _.each(self.config.securitySensors,function(deviceId) {
-        var deviceObject  = self.controller.devices.get(deviceId);
-        if (deviceObject === null) {
-            self.error('Device not found '+deviceId);
-        } else {
-            deviceObject.on('change:metrics:level',self.callbackSensor);
-        }
+    self.processDeviceList(self.config.securitySensors,function(deviceObject) {
+        deviceObject.on('change:metrics:level',self.callbackSensor);
+    });
     });
 };
 
 MotionTrigger.prototype.stop = function() {
     var self = this;
     
-    _.each(self.config.securitySensors,function(deviceId) {
-        var deviceObject  = self.controller.devices.get(deviceId);
-        if (deviceObject !== null) {
-            deviceObject.off('change:metrics:level',self.callbackSensor);
-        }
+    self.processDeviceList(self.config.securitySensors,function(deviceObject) {
+        deviceObject.off('change:metrics:level',self.callbackSensor);
+    });
     });
     
     self.controller.off('light.off',self.callbackEvent);
@@ -258,11 +252,7 @@ MotionTrigger.prototype.checkDevice = function(devices) {
     var self = this;
     
     var status = false;
-    _.each(devices,function(deviceId) {
-        var deviceObject = self.controller.devices.get(deviceId);
-        if (deviceObject === null) {
-            return;
-        }
+    self.processDeviceList(devices,function(deviceObject) {
         var type    = deviceObject.get('deviceType') ;
         var level   = deviceObject.get("metrics:level");
         if (type === 'switchBinary'
@@ -377,11 +367,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     
     self.log('Turning '+(mode ? 'on':'off'));
     
-    _.each(self.config.lights,function(deviceId) {
-        var deviceObject = self.controller.devices.get(deviceId);
-        if (deviceObject === null) {
-            return;
-        }
+    self.processDeviceList(self.config.lights,function(deviceObject) {
         if (deviceObject.get('deviceType') === 'switchBinary') {
             deviceObject.performCommand((mode) ? 'on':'off');
         } else if (deviceObject.get('deviceType') === 'switchMultilevel') {
