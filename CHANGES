@@ -1,3 +1,22 @@
+1.03 2015 Dec 27, Sun
+    * German translation
+    * Pass device to trigger function
+    * Untrigger if light was switched off manually
+    * Use BaseModule
+    * Emit light.on / light.off events
+    * Prevent accidental triggering
+    * Set probeType
+    * Fix time checks if multiple time slots are set
+    * Dimmer level max 99 (255 is only for blinds)
+    * Clarify docs
+    * Improved timeout calculation
+    * Restart timeouts on engine restart
+    * Add time checks
+    * Level max = 255
+    * Not a singleton
+    * Use 'null' to check for missing device, Unify variable names
+	* Documentation
+
 1.02 2015 Nov 01, Sun
     * Fix module.json
     * Trigger immediately when activated
