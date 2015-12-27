@@ -329,34 +329,10 @@ MotionTrigger.prototype.checkPrecondition = function() {
         var dateNow = new Date();
         _.each(self.config.timeActive,function(element) {
             if (timeCheck !== true) {
-                var start   = self.parseTime(element.start);
-                var end     = self.parseTime(element.end);
-                if (end < start) {
-                    if (dateNow > start) {
-                        var endHour     = end.getHours();
-                        var endMinute   = end.getMinutes();
-                        end.setHours(endHour + 24);
-                        // Now fix time jump on DST
-                        end.setHours(endHour,endMinute);
-                    } else if (end > dateNow) {
-                        var startHour   = start.getHours();
-                        var startMinute = start.getMinutes();
-                        start.setHours(startHour - 24);
-                        // Now fix time jump on DST
-                        start.setHours(startHour,startMinute);
-                    }
-                }
-                
-                if (dateNow >= start && dateNow <= end) {
-                    timeCheck = true;
-                } else {
-                    timeCheck = false;
-                }
+                timeCheck = self.checkPeriod(element.start,element.end);
             }
         });
-        if (timeCheck === false) {
-            check = false;
-        }
+        check = timeCheck;
     }
     
     return check;
