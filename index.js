@@ -62,6 +62,7 @@ MotionTrigger.prototype.init = function (config) {
                 self.resetTimeout();
                 // Turn off if triggered
                 if (this.get("metrics:triggered")) {
+                    self.log('Switching off all triggered devices');
                     self.switchDevice(false);
                 }
             } else if (command === 'on') {
@@ -192,10 +193,10 @@ MotionTrigger.prototype.handleEvent = function(event) {
 MotionTrigger.prototype.handleSensor = function(vDev) {
     var self = this;
     
-    self.handleChange(vDev.get('metrics:level'));
+    self.handleChange(vDev.get('metrics:level'),vDev);
 };
 
-MotionTrigger.prototype.handleChange = function(mode) {
+MotionTrigger.prototype.handleChange = function(mode,vDev) {
     var self = this;
     
     // Check trigger device on
@@ -203,7 +204,17 @@ MotionTrigger.prototype.handleChange = function(mode) {
         return;
     }
     
-    self.log('Handle change to '+mode+' via '+self.id);
+    if (typeof(vDev) === 'object'
+        && vDev instanceof VirtualDevice) {
+        if (vDev.get('metrics:lastLevel') === mode) {
+            self.log('Ignoring event. Noting changed.');
+            return;
+        }
+        self.log('Handle change to '+mode+' via '+vDev.id);
+    } else {
+        self.log('Handle change to '+mode);
+    }
+    
     
     // Check security device status
     var sensors     = self.checkDevice(self.config.securitySensors);
