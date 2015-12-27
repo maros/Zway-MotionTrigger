@@ -154,18 +154,25 @@ MotionTrigger.prototype.handleLight = function(vDev) {
     var self = this;
     
     var triggered = self.vDev.get('metrics:triggered');
+    if (!triggered) {
+        return;
+    }
     
-    if (triggered) {
-        var lightsOn = false;
-        self.processDeviceList(self.config.lights,function(deviceObject) {
-            if (deviceObject.get('metrics:level') === 'on') {
-                lightsOn = true;
-            }
-        });
-        
-        if (lightsOn === false) {
-            self.switchDevice(false);
+    if (typeof(self.lock) !== 'undefined'
+        && self.lock.cleared === false) {
+        self.log('Has lock');
+        return;
+    }
+    
+    var lightsOn = false;
+    self.processDeviceList(self.config.lights,function(deviceObject) {
+        if (deviceObject.get('metrics:level') === 'on') {
+            lightsOn = true;
         }
+    });
+    
+    if (lightsOn === false) {
+        self.switchDevice(false);
     }
 };
 
@@ -178,7 +185,7 @@ MotionTrigger.prototype.handleEvent = function(event) {
     
     setTimeout(
         _.bind(self.handleChange,self,'on'),
-        1000
+        500
     );
 };
 
@@ -362,6 +369,8 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     var dimmerLevel = 99;
     if (level === 'on' && mode === true) {
         self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
+        
+        self.lock = new Timeout(self,function() {},1000*5);
         
         if (self.config.recheckPreconditions) {
             self.resetInterval();
