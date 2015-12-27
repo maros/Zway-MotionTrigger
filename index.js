@@ -325,10 +325,9 @@ MotionTrigger.prototype.checkPrecondition = function() {
     
     var check = true;
     _.each(self.config.preconditions,function(element) {
+        if (check === false) return;
         var deviceObject = self.controller.devices.get(element.device);
-        if (deviceObject === null) {
-            return;
-        }
+        if (deviceObject === null) return;
         var level = deviceObject.get("metrics:level");
         if (! self.op(level,element.testOperator,element.testValue)) {
             check = false;
@@ -343,7 +342,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
                 timeCheck = self.checkPeriod(element.start,element.end);
             }
         });
-        check = timeCheck;
+        if (timeCheck === false) check = false;
     }
     
     return check;
