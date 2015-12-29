@@ -204,17 +204,17 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         return;
     }
     
+    // Check if actual change happened
     if (typeof(vDev) === 'object'
         && vDev instanceof VirtualDevice) {
         if (vDev.get('metrics:lastLevel') === mode) {
-            self.log('Ignoring event. Noting changed.');
+            self.log('Ignoring event from '+vDev.id+'. Noting changed');
             return;
         }
-        self.log('Handle change to '+mode+' via '+vDev.id);
+        self.log('Handle change to '+mode+' from '+vDev.id);
     } else {
         self.log('Handle change to '+mode);
     }
-    
     
     // Check security device status
     var sensors     = self.checkDevice(self.config.securitySensors);
