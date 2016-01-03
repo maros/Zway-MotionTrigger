@@ -336,7 +336,6 @@ MotionTrigger.prototype.checkPrecondition = function() {
     
     if (check === true) {
         var timeCheck;
-        var dateNow = new Date();
         _.each(self.config.timeActive,function(element) {
             if (timeCheck !== true) {
                 timeCheck = self.checkPeriod(element.start,element.end);
