@@ -111,11 +111,11 @@ MotionTrigger.prototype.initCallback = function() {
     }
     
     self.processDeviceList(self.config.securitySensors,function(deviceObject) {
-        deviceObject.on('change:metrics:level',self.callbackSensor);
+        deviceObject.on('modify:metrics:level',self.callbackSensor);
     });
     
     self.processDeviceList(self.config.lights,function(deviceObject) {
-        deviceObject.on('change:metrics:level',self.callbackLight);
+        deviceObject.on('modify:metrics:level',self.callbackLight);
     });
 };
 
@@ -123,11 +123,11 @@ MotionTrigger.prototype.stop = function() {
     var self = this;
     
     self.processDeviceList(self.config.securitySensors,function(deviceObject) {
-        deviceObject.off('change:metrics:level',self.callbackSensor);
+        deviceObject.off('modify:metrics:level',self.callbackSensor);
     });
     
     self.processDeviceList(self.config.lights,function(deviceObject) {
-        deviceObject.off('change:metrics:level',self.callbackLight);
+        deviceObject.off('modify:metrics:level',self.callbackLight);
     });
     
     self.controller.off('light.off',self.callbackEvent);
@@ -207,10 +207,6 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
     // Check if actual change happened
     if (typeof(vDev) === 'object'
         && vDev instanceof VirtualDevice) {
-        if (vDev.get('metrics:lastLevel') === mode) {
-            self.log('Ignoring event from '+vDev.id+'. Noting changed');
-            return;
-        }
         self.log('Handle change to '+mode+' from '+vDev.id);
     } else {
         self.log('Handle change to '+mode);
