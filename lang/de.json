@@ -1,5 +1,5 @@
 {
-   "description" : "Schaltet Lichter anhand von Sicherheits Sensoren wie zB. Bewegungsmeldern oder Tür Sensoren. Man kann mehrere Geräte zum Schalten, sowie mehre Schalt-Bedingungen und Zeitverzögerungen einstellen.",
+   "m_descr" : "Schaltet Lichter anhand von Sicherheits Sensoren wie zB. Bewegungsmeldern oder Tür Sensoren. Man kann mehrere Geräte zum Schalten, sowie mehre Schalt-Bedingungen und Zeitverzögerungen einstellen.",
    "dimmer_level_helper": "Dimmer Stufe kann eine Nummer oder ein JavaScript Code sein der eine Nummer zurückgibt.",
    "dimmer_level_label": "Dimmer Stufe",
    "extra_lights_helper": "Liste von anderen Lichtern die überpüft werden sollen. Schaltet nicht wenn bereits ein Gerät in dieser Liste eingeschalten ist.",
@@ -16,5 +16,5 @@
    "time_start_label" : "Start",
    "timeout_helper" : "Nachlauf (in Sekunden) nachdem der letze Sensor nicht mehr auslöst.",
    "timeout_label" : "Nachlauf",
-   "title" : "Smart light triggers"
+   "m_title" : "Smart light triggers"
 }

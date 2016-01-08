@@ -1,5 +1,5 @@
 {
-   "description" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.",
+   "m_descr" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.",
    "dimmer_level_helper" : "Dimmer level may be a number or javascript code that should return a number",
    "dimmer_level_label" : "Dimmer level",
    "extra_lights_helper" : "Extra lights to check before triggering light. If one of the selected devices is already on, lights will not be triggered.",
@@ -16,5 +16,5 @@
    "time_start_label" : "Start",
    "timeout_helper" : "Keep triggered delay after sensor was untripped",
    "timeout_label" : "Trigger timeout (seconds)",
-   "title" : "Smart light triggers"
+   "m_title" : "Smart light triggers"
 }

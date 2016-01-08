@@ -40,7 +40,7 @@ MotionTrigger.prototype.init = function (config) {
         defaults: {
             metrics: {
                 level: 'off',
-                title: self.langFile.title,
+                title: self.langFile.m_title,
                 icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png",
                 triggered: false,
                 timeout: null

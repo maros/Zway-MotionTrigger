@@ -2,10 +2,10 @@
    "author" : "Maroš Kollár",
    "category" : "complex_applications",
    "defaults" : {
-      "description" : "__description__",
+      "description" : "__m_descr__",
       "recheckPreconditions" : false,
       "timeout" : 180,
-      "title" : "__title__"
+      "title" : "__m_title__"
    },
    "dependencies" : [
       "BaseModule"
