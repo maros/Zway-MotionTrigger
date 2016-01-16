@@ -296,6 +296,8 @@ MotionTrigger.prototype.checkDevice = function(devices) {
     self.processDeviceList(devices,function(deviceObject) {
         var type    = deviceObject.get('deviceType') ;
         var level   = deviceObject.get("metrics:level");
+        
+        self.log('Device '+deviceObject.get("metrics:title")+' is '+level);
         if (type === 'switchBinary'
             || type === 'sensorBinary') {
             if (level === 'on') {
@@ -307,7 +309,7 @@ MotionTrigger.prototype.checkDevice = function(devices) {
                 status = true;
             }
         } else {
-            console.error('[MotionTrigger] Unsupported device type '+deviceObject.get('deviceType'));
+            self.error('Unsupported device type '+deviceObject.get('deviceType'));
             return;
         }
     });
@@ -367,7 +369,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
             try {
                 dimmerLevel = parseInt(eval(self.dimmerLevel),10);
             } catch (e) {
-                console.error('[MotionTrigger] Could not calculate dimmer level: '+e);
+                self.error('Could not calculate dimmer level: '+e);
                 dimmerLevel = 99;
             }
         }
@@ -395,7 +397,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                 deviceObject.performCommand('exact',{ level: level });
             }
         } else {
-            console.error('[MotionTrigger] Unspported device type '+deviceObject.get('deviceType'));
+            self.error('Unspported device type '+deviceObject.get('deviceType'));
             return;
         }
         deviceObject.set('metrics:auto',mode);
