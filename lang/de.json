@@ -1,10 +1,11 @@
 {
-   "m_descr" : "Schaltet Lichter anhand von Sicherheits Sensoren wie zB. Bewegungsmeldern oder Tür Sensoren. Man kann mehrere Geräte zum Schalten, sowie mehre Schalt-Bedingungen und Zeitverzögerungen einstellen.",
-   "dimmer_level_helper": "Dimmer Stufe kann eine Nummer oder ein JavaScript Code sein der eine Nummer zurückgibt.",
-   "dimmer_level_label": "Dimmer Stufe",
-   "extra_lights_helper": "Liste von anderen Lichtern die überpüft werden sollen. Schaltet nicht wenn bereits ein Gerät in dieser Liste eingeschalten ist.",
-   "extra_lights_label": "Andere Lichter",
+   "dimmer_level_helper" : "Dimmer Stufe kann eine Nummer oder ein JavaScript Code sein der eine Nummer zurückgibt.",
+   "dimmer_level_label" : "Dimmer Stufe",
+   "extra_lights_helper" : "Liste von anderen Lichtern die überpüft werden sollen. Schaltet nicht wenn bereits ein Gerät in dieser Liste eingeschalten ist.",
+   "extra_lights_label" : "Andere Lichter",
    "lights_label" : "Geschaltene Geräte",
+   "m_descr" : "Schaltet Lichter anhand von Sicherheits Sensoren wie zB. Bewegungsmeldern oder Tür Sensoren. Man kann mehrere Geräte zum Schalten, sowie mehre Schalt-Bedingungen und Zeitverzögerungen einstellen.\nSiehe https://github.com/maros/Zway-MotionTrigger//blob/master/README.md für detailliertere Dokumentation.",
+   "m_title" : "Smarter Licht Bewegungsmelder",
    "preconditions_helper" : "Mehrer Bedingungen die geprüft werden sollen bevor ein Gerät geschalten wird. Schaltung erfolgt nur wenn alle Bedingungen erfüllt sind.",
    "preconditions_label" : "Bedingungen",
    "recheck_preconditions_helper" : "Wenn diese Option ausgewählt ist, werden die Bedingunen regelmäßig erneut geprüft, und die Lichter ggf. wieder ausgeschaltet. Wenn diese Option deaktiviert ist werden die Bedingungen nur ein mal am Anfang geprüft.",
@@ -15,6 +16,5 @@
    "time_placeholder" : "HH:MM",
    "time_start_label" : "Start",
    "timeout_helper" : "Nachlauf (in Sekunden) nachdem der letze Sensor nicht mehr auslöst.",
-   "timeout_label" : "Nachlauf",
-   "m_title" : "Smarter Licht Bewegungsmelder"
+   "timeout_label" : "Nachlauf"
 }

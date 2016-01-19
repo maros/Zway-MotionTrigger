@@ -1,10 +1,11 @@
 {
-   "m_descr" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.",
    "dimmer_level_helper" : "Dimmer level may be a number or javascript code that should return a number",
    "dimmer_level_label" : "Dimmer level",
    "extra_lights_helper" : "Extra lights to check before triggering light. If one of the selected devices is already on, lights will not be triggered.",
    "extra_lights_label" : "Extra Lights",
    "lights_label" : "Tigger lights",
+   "m_descr" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.\nCheck https://github.com/maros/Zway-MotionTrigger//blob/master/README.md for detailed documentation.",
+   "m_title" : "Smart light triggers",
    "preconditions_helper" : "Multiple checks can be added to check preconditions before triggering. Will only trigger if all conditions are met.",
    "preconditions_label" : "Preconditions to check before triggering",
    "recheck_preconditions_helper" : "Check preconditions regularly (Enable) or only once upon triggering the device (Disable)",
@@ -15,6 +16,5 @@
    "time_placeholder" : "HH:MM",
    "time_start_label" : "Start",
    "timeout_helper" : "Keep triggered delay after sensor was untripped",
-   "timeout_label" : "Trigger timeout (seconds)",
-   "m_title" : "Smart light triggers"
+   "timeout_label" : "Trigger timeout (seconds)"
 }
