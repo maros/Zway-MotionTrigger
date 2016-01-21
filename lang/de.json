@@ -4,7 +4,7 @@
    "extra_lights_helper" : "Liste von anderen Lichtern die überpüft werden sollen. Schaltet nicht wenn bereits ein Gerät in dieser Liste eingeschalten ist.",
    "extra_lights_label" : "Andere Lichter",
    "lights_label" : "Geschaltene Geräte",
-   "m_descr" : "Schaltet Lichter anhand von Sicherheits Sensoren wie zB. Bewegungsmeldern oder Tür Sensoren. Man kann mehrere Geräte zum Schalten, sowie mehre Schalt-Bedingungen und Zeitverzögerungen einstellen.<br>Siehe  <a href=\"https://github.com/maros/Zway-MotionTrigger/blob/master/README.md\">github.com/maros/Zway-MotionTrigger</a> für detailliertere Dokumentation.",
+   "m_descr" : "Schaltet Lichter anhand von Sicherheits Sensoren wie zB. Bewegungsmeldern oder Tür Sensoren. Man kann mehrere Geräte zum Schalten, sowie mehre Schalt-Bedingungen und Zeitverzögerungen einstellen.<br>Siehe <a href=https://github.com/maros/Zway-MotionTrigger/blob/master/README.md>github.com/maros/Zway-MotionTrigger</a> für detailliertere Dokumentation.",
    "m_title" : "Smarter Licht Bewegungsmelder",
    "preconditions_helper" : "Mehrer Bedingungen die geprüft werden sollen bevor ein Gerät geschalten wird. Schaltung erfolgt nur wenn alle Bedingungen erfüllt sind.",
    "preconditions_label" : "Bedingungen",
