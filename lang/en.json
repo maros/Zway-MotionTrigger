@@ -4,7 +4,7 @@
    "extra_lights_helper" : "Extra lights to check before triggering light. If one of the selected devices is already on, lights will not be triggered.",
    "extra_lights_label" : "Extra Lights",
    "lights_label" : "Tigger lights",
-   "m_descr" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.\nCheck https://github.com/maros/Zway-MotionTrigger//blob/master/README.md for detailed documentation.",
+   "m_descr" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.<br>Check  <a href=\"https://github.com/maros/Zway-MotionTrigger/blob/master/README.md\">github.com/maros/Zway-MotionTrigger</a> for detailed documentation.",
    "m_title" : "Smart light triggers",
    "preconditions_helper" : "Multiple checks can be added to check preconditions before triggering. Will only trigger if all conditions are met.",
    "preconditions_label" : "Preconditions to check before triggering",
