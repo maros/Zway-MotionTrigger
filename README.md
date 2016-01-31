@@ -46,10 +46,14 @@ Value to be used for the check
 Trigger timeout duration after the last security sensor has been untripped.
 (in seconds)
 
-## dimmerLevel
+## dimmer.mode, dimmer.static, dimmer.code
 
-Set the dimmer levels. The value may either be a number, or a JavaScript
-function that calculates the levels (eg. based on time, luminosity, ...)
+Sets how the dimmer level sould be determined. 
+
+* Full: Sets dimmers to 100% (default)
+* Static: Sets the dimmer level to a user-defined value
+* Code: Executes a user-provided JavaScript code to calculate the dimmer level
+* Dynamic: Calculate dimmer based on luminosity
 
 ## timeActive
 

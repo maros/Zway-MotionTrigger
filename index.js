@@ -19,7 +19,6 @@ function MotionTrigger (id, controller) {
     this.callbackEvent  = undefined;
     this.callbackSensor = undefined;
     this.interval       = undefined;
-    this.dimmerLevel    = undefined;
 }
 
 inherits(MotionTrigger, BaseModule);
@@ -72,14 +71,6 @@ MotionTrigger.prototype.init = function (config) {
         },
         moduleId: self.id
     });
-    
-    if (typeof(self.config.dimmerLevel) === 'string'
-        && self.config.dimmerLevel !== '') {
-        self.dimmerLevel = self.config.dimmerLevel;
-        if (self.dimmerLevel.match('^\s*\d+\s*$')) {
-            self.dimmerLevel = parseInt(self.dimmerLevel,10);
-        }
-    }
     
     self.callbackSensor = _.bind(self.handleSensor,self);
     self.callbackEvent  = _.bind(self.handleEvent,self);
@@ -363,16 +354,22 @@ MotionTrigger.prototype.switchDevice = function(mode) {
             );
         }
         
-        if (typeof(self.dimmerLevel) === 'number') {
-            dimmerLevel = self.dimmerLevel;
-        } else if (typeof(self.dimmerLevel) === 'string') {
-            try {
-                dimmerLevel = parseInt(eval(self.dimmerLevel),10);
-            } catch (e) {
-                self.error('Could not calculate dimmer level: '+e);
-                dimmerLevel = 99;
-            }
+        switch (self.config.dimmer.mode) {
+            case 'static':
+                dimmerLevel = parseInt(self.config.dimmer.static,10);
+                break;
+            case 'code':
+                try {
+                    dimmerLevel = parseInt(eval(self.config.dimmer.code),10);
+                } catch (e) {
+                    self.error('Could not calculate dimmer level: '+e);
+                }
+                break;
+            case 'dynamic':
+                // TODO
+                break;
         }
+        
         if (dimmerLevel > 99) {
             dimmerLevel = 99;
         }

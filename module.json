@@ -16,13 +16,6 @@
    "moduleName" : "MotionTrigger",
    "options" : {
       "fields" : {
-         "dimmerLevel" : {
-            "cols" : 40,
-            "helper" : "__dimmer_level_helper__",
-            "label" : "__dimmer_level_label__",
-            "order" : 3,
-            "type" : "textarea"
-         },
          "extraLights" : {
             "fields" : {
                "item" : {
@@ -31,6 +24,47 @@
                   "optionLabels" : "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
                   "type" : "select"
                }
+         "dimmer" : {
+            "order": 3,
+            "fields": {
+                "mode": {
+                    "optionLabels" : [
+                        "__dimmer_mode_full__",
+                        "__dimmer_mode_static__",
+                        "__dimmer_mode_code__",
+                        "__dimmer_mode_dynamic__"
+                     ],
+                     "type" : "select",
+                     "oder": 1,
+                     "label": "__dimmer_mode_label__",
+                     "helper": "__dimmer_mode_helper__"
+                },
+                "code": {
+                    "dependencies" : {
+                       "mode" : "code"
+                    },
+                    "label": "__dimmer_code_label__",
+                    "order": 2,
+                    "dependencies" : "mode",
+                    "type" : "textarea"
+                },
+                "static": {
+                    "label": "__dimmer_static_label__",
+                    "dependencies" : {
+                       "mode" : "static"
+                    },
+                    "order": 3,
+                    "dependencies" : "mode",
+                },
+                "dynamic:" {
+                    "label": "__dimmer_dynamic_label__",
+                    "order": 4,
+                    "dependencies" : {
+                       "mode" : "dynamic"
+                    },
+                    "dependencies" : "mode",
+                    "fields": {}
+                }
             },
             "helper" : "__extra_lights_helper__",
             "label" : "__extra_lights_label__",
@@ -127,17 +161,39 @@
    },
    "schema" : {
       "properties" : {
-         "dimmerLevel" : {
-            "type" : "string"
-         },
          "extraLights" : {
             "items" : {
                "datasource" : "namespaces",
                "enum" : "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
                "field" : "enum"
+         "dimmer" : {
+            "properties": {
+                "mode": {
+                    "enum" : [
+                        "full",
+                        "static",
+                        "code",
+                        "dynamic"
+                     ],
+                     "default": "full",
+                     "required" : true,
+                     "type" : "string"
+                },
+                "code": {
+                    "dependencies" : "mode",
+                    "type": "string",
+                },
+                "static": {
+                    "dependencies" : "mode",
+                    "type": "number"
+                },
+                "dynamic:" {
+                    "dependencies" : "mode",
+                    "type" : "object",
+                    "properties": {}
+                }
             },
-            "type" : "array",
-            "uniqueItems" : true
+            "type" : "object"
          },
          "lights" : {
             "items" : {
