@@ -16,14 +16,6 @@
    "moduleName" : "MotionTrigger",
    "options" : {
       "fields" : {
-         "extraLights" : {
-            "fields" : {
-               "item" : {
-                  "datasource" : "namespaces",
-                  "field" : "optionLabels",
-                  "optionLabels" : "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
-                  "type" : "select"
-               }
          "dimmer" : {
             "order": 3,
             "fields": {
@@ -66,9 +58,7 @@
                     "fields": {}
                 }
             },
-            "helper" : "__extra_lights_helper__",
-            "label" : "__extra_lights_label__",
-            "order" : 4
+            "type" : "object"
          },
          "lights" : {
             "fields" : {
@@ -84,30 +74,97 @@
          },
          "preconditions" : {
             "helper" : "__preconditions_helper__",
-            "items" : {
-               "fields" : {
-                  "device" : {
-                     "datasource" : "namespaces",
-                     "field" : "optionLabels",
-                     "label" : "",
-                     "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName",
-                     "type" : "select"
-                  },
-                  "testOperator" : {
-                     "optionLabels" : [
-                        "=",
-                        "≠",
-                        ">",
-                        "≥",
-                        "<",
-                        "≤"
-                     ],
-                     "type" : "select"
-                  }
-               }
-            },
             "label" : "__preconditions_label__",
-            "order" : 5
+            "order" : 5,
+            "binary" : {
+                "helper" : "__binary_helper__",
+                "items" : {
+                   "fields" : {
+                      "device" : {
+                         "datasource" : "namespaces",
+                         "field" : "optionLabels",
+                         "label" : "",
+                         "optionLabels" : "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName",
+                         "order" : 1,
+                         "type" : "select"
+                      },
+                      "value" : {
+                         "order" : 2
+                      }
+                   }
+                },
+                "label" : "__binary_label__",
+                "order" : 3
+             },
+             "multilevel" : {
+                "helper" : "__multilevel_helper__",
+                "items" : {
+                   "fields" : {
+                      "device" : {
+                         "datasource" : "namespaces",
+                         "field" : "optionLabels",
+                         "label" : "",
+                         "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName",
+                         "order" : 1,
+                         "type" : "select"
+                      },
+                      "operator" : {
+                         "optionLabels" : [
+                            "=",
+                            "≠",
+                            ">",
+                            "≥",
+                            "<",
+                            "≤"
+                         ],
+                         "order" : 2,
+                         "type" : "select"
+                      },
+                      "value" : {
+                         "order" : 3
+                      }
+                   }
+                },
+                "label" : "__multilevel_label__",
+                "order" : 4
+             },
+             "time" : {
+                "helper" : "__time_helper__",
+                "items" : {
+                   "fields" : {
+                      "dayofweek" : {
+                         "label" : "__dayofweek_label__",
+                         "optionLabels" : [
+                            "__dayofweek_0__",
+                            "__dayofweek_1__",
+                            "__dayofweek_2__",
+                            "__dayofweek_3__",
+                            "__dayofweek_4__",
+                            "__dayofweek_5__",
+                            "__dayofweek_6__"
+                         ],
+                         "type" : "checkbox"
+                      },
+                      "timeFrom" : {
+                         "label" : "__time_from_label__",
+                         "maskString" : "99:99",
+                         "order" : 1,
+                         "placeholder" : "__time_placeholder__",
+                         "type" : "time"
+                      },
+                      "timeTo" : {
+                         "label" : "__time_to_label__",
+                         "maskString" : "99:99",
+                         "order" : 2,
+                         "placeholder" : "__time_placeholder__",
+                         "type" : "time"
+                      }
+                   }
+                },
+                "label" : "__time_label__",
+                "order" : 2
+             }
+          }
          },
          "recheckPreconditions" : {
             "helper" : "__recheck_preconditions_helper__",
@@ -126,28 +183,6 @@
             "label" : "__security_sensors_label__",
             "order" : 1
          },
-         "timeActive" : {
-            "items" : {
-               "fields" : {
-                  "end" : {
-                     "label" : "__time_end_label__",
-                     "maskString" : "99:99",
-                     "order" : 2,
-                     "placeholder" : "__time_placeholder__",
-                     "type" : "time"
-                  },
-                  "start" : {
-                     "label" : "__time_start_label__",
-                     "maskString" : "99:99",
-                     "order" : 1,
-                     "placeholder" : "__time_placeholder__",
-                     "type" : "time"
-                  }
-               }
-            },
-            "label" : "__time_label__",
-            "order" : 6
-         },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
@@ -161,11 +196,6 @@
    },
    "schema" : {
       "properties" : {
-         "extraLights" : {
-            "items" : {
-               "datasource" : "namespaces",
-               "enum" : "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
-               "field" : "enum"
          "dimmer" : {
             "properties": {
                 "mode": {
@@ -207,35 +237,96 @@
             "uniqueItems" : true
          },
          "preconditions" : {
-            "items" : {
-               "properties" : {
-                  "device" : {
-                     "datasource" : "namespaces",
-                     "enum" : "namespaces:devices_sensorMultilevel:deviceId",
-                     "field" : "enum",
-                     "required" : true
-                  },
-                  "testOperator" : {
-                     "enum" : [
-                        "=",
-                        "!=",
-                        ">",
-                        ">=",
-                        "<",
-                        "<="
-                     ],
-                     "required" : true,
-                     "type" : "string"
-                  },
-                  "testValue" : {
-                     "required" : true,
-                     "type" : "number"
-                  }
-               },
-               "required" : true,
-               "type" : "object"
+            "properties" : {
+                "binary" : {
+                    "items" : {
+                       "properties" : {
+                          "device" : {
+                             "datasource" : "namespaces",
+                             "enum" : "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
+                             "field" : "enum",
+                             "required" : true
+                          },
+                          "value" : {
+                             "default" : "on",
+                             "enum" : [
+                                "off",
+                                "on"
+                             ],
+                             "required" : true,
+                             "type" : "string"
+                          }
+                       },
+                       "type" : "object"
+                    },
+                    "type" : "array"
+                 },
+                 "multilevel" : {
+                    "items" : {
+                       "properties" : {
+                          "device" : {
+                             "datasource" : "namespaces",
+                             "enum" : "namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_battery:deviceId",
+                             "field" : "enum",
+                             "required" : true
+                          },
+                          "operator" : {
+                             "enum" : [
+                                "=",
+                                "!=",
+                                ">",
+                                ">=",
+                                "<",
+                                "<="
+                             ],
+                             "required" : true,
+                             "type" : "string"
+                          },
+                          "value" : {
+                             "required" : true,
+                             "type" : "number"
+                          }
+                       },
+                       "type" : "object"
+                    },
+                    "type" : "array"
+                 },
+                 "time" : {
+                    "items" : {
+                       "properties" : {
+                          "dayofweek" : {
+                             "enum" : [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5",
+                                "6"
+                             ],
+                             "type" : "array"
+                          },
+                          "timeFrom" : {
+                             "pattern" : "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
+                             "placeholder" : "__time_placeholder__",
+                             "required" : true,
+                             "type" : "string"
+                          },
+                          "timeTo" : {
+                             "pattern" : "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
+                             "placeholder" : "__time_placeholder__",
+                             "required" : true,
+                             "type" : "string"
+                          }
+                       },
+                       "type" : "object"
+                    },
+                    "type" : "array"
+                 }
+              }
             },
-            "type" : "array"
+            "required" : true,
+            "type" : "object"
          },
          "recheckPreconditions" : {
             "required" : true,
@@ -251,24 +342,6 @@
             "minItems" : 1,
             "type" : "array",
             "uniqueItems" : true
-         },
-         "timeActive" : {
-            "items" : {
-               "properties" : {
-                  "end" : {
-                     "pattern" : "^(([01]?[0-9]|(2[0-3])):([0-5][0-9])$",
-                     "required" : true,
-                     "type" : "string"
-                  },
-                  "start" : {
-                     "pattern" : "^(([01]?[0-9]|(2[0-3])):([0-5][0-9])$",
-                     "required" : true,
-                     "type" : "string"
-                  }
-               },
-               "type" : "object"
-            },
-            "type" : "array"
          },
          "timeout" : {
             "minimum" : 1,

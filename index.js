@@ -212,16 +212,14 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         && mode === 'on') {
         // Check trigger lights on
         var lights          = self.checkDevice(self.config.lights);
-        var extraLights     = self.checkDevice(self.config.extraLights);
         // Check extra sensors
         var precondition    = self.checkPrecondition();
         
-        self.log('Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', extra: '+extraLights+', triggered:'+triggered+')');
+        self.log('Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', triggered:'+triggered+')');
         
         // Trigger light
         if (precondition === true 
-            && lights === false
-            && extraLights === false) {
+            && lights === false) {
             self.resetTimeout();
             self.switchDevice(true);
         // Retrigger light
@@ -312,28 +310,96 @@ MotionTrigger.prototype.checkDevice = function(devices) {
 MotionTrigger.prototype.checkPrecondition = function() {
     var self = this;
     
-    var check = true;
-    _.each(self.config.preconditions,function(element) {
-        if (check === false) return;
-        var deviceObject = self.controller.devices.get(element.device);
-        if (deviceObject === null) return;
-        var level = deviceObject.get("metrics:level");
-        if (! self.op(level,element.testOperator,element.testValue)) {
-            check = false;
+    self.log('Calculating precondition');
+    
+    var dateNow         = new Date();
+    var dayofweekNow    = dateNow.getDay().toString();
+    var condition       = true;
+    
+    // Check time
+    if (condition === true
+        && self.config.time.length > 0) {
+        var timeCondition = false;
+        _.each(self.config.time,function(time) {
+            if (timeCondition === true) {
+                return;
+            }
+            var timeFrom    = self.parseTime(time.timeFrom);
+            var timeTo      = self.parseTime(time.timeTo);
+            
+            // Check time
+            if (typeof(timeFrom) === 'undefined'
+                || typeof(timeTo) === 'undefined') {
+                return;
+            }
+            
+            // Check day of week if set
+            if (typeof(time.dayofweek) === 'object' 
+                && time.dayofweek.length > 0
+                && _.indexOf(time.dayofweek, dayofweekNow.toString()) === -1) {
+                self.log('Day of week does not match');
+                return;
+            }
+            
+            if (timeTo < timeFrom) {
+                if (timeTo.getDate() === dateNow.getDate()) {
+                    var fromHour   = timeFrom.getHours();
+                    var fromMinute = timeFrom.getMinutes();
+                    timeFrom.setHours(fromHour - 24);
+                    // Now fix time jump on DST
+                    timeFrom.setHours(fromHour,fromMinute);
+                } else {
+                    var toHour     = timeTo.getHours();
+                    var toMinute   = timeTo.getMinutes();
+                    timeTo.setHours(toHour + 24);
+                    // Now fix time jump on DST
+                    timeTo.setHours(toHour,toMinute);
+                }
+            }
+            
+            if (timeFrom > dateNow || dateNow > timeTo) {
+                self.log('Time does not match');
+                return;
+            }
+            
+            timeCondition = true;
+        });
+        condition = timeCondition;
+    }
+    
+    // Check binary
+    _.each(self.config.binary,function(check) {
+        if (condition) {
+            var device = self.controller.devices.get(check.device);
+            if (typeof(device) !== 'undefined') {
+                var level = device.get('metrics:level');
+                if (check.value !== level) {
+                    self.log('Binary does not match');
+                    condition = false;
+                }
+            } else {
+                self.error('Could not find device '+check.device);
+            }
         }
     });
     
-    if (check === true) {
-        var timeCheck;
-        _.each(self.config.timeActive,function(element) {
-            if (timeCheck !== true) {
-                timeCheck = self.checkPeriod(element.start,element.end);
+    // Check multilevel
+    _.each(self.config.multilevel,function(check) {
+        if (condition) {
+            var device = self.controller.devices.get(check.device);
+            if (typeof(device) !== 'undefined') {
+                var level = device.get('metrics:level');
+                if (self.compare(check.value,check.operator,level)) {
+                    self.log('Multilevel does not match');
+                    condition = false;
+                }
+            } else {
+                self.error('Could not find device '+check.device);
             }
-        });
-        if (timeCheck === false) check = false;
-    }
+        }
+    });
     
-    return check;
+    return condition;
 };
 
 MotionTrigger.prototype.switchDevice = function(mode) {
