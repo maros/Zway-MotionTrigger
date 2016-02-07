@@ -46,9 +46,9 @@
                        "mode" : "static"
                     },
                     "order": 3,
-                    "dependencies" : "mode",
+                    "dependencies" : "mode"
                 },
-                "dynamic:" {
+                "dynamic": {
                     "label": "__dimmer_dynamic_label__",
                     "order": 4,
                     "dependencies" : {
@@ -164,7 +164,6 @@
                 "label" : "__time_label__",
                 "order" : 2
              }
-          }
          },
          "recheckPreconditions" : {
             "helper" : "__recheck_preconditions_helper__",
@@ -211,13 +210,13 @@
                 },
                 "code": {
                     "dependencies" : "mode",
-                    "type": "string",
+                    "type": "string"
                 },
                 "static": {
                     "dependencies" : "mode",
                     "type": "number"
                 },
-                "dynamic:" {
+                "dynamic": {
                     "dependencies" : "mode",
                     "type" : "object",
                     "properties": {}
@@ -323,7 +322,6 @@
                     },
                     "type" : "array"
                  }
-              }
             },
             "required" : true,
             "type" : "object"
