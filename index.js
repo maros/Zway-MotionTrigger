@@ -469,22 +469,3 @@ MotionTrigger.prototype.resetTimeout = function() {
     }
     self.vDev.set('metrics:timeout',null);
 };
-
-// Condition comparison helper
-MotionTrigger.prototype.compare = function (val1, op, val2) {
-    if (op === "=") {
-        return val1 === val2;
-    } else if (op === "!=") {
-        return val1 !== val2;
-    } else if (op === ">") {
-        return val1 > val2;
-    } else if (op === "<") {
-        return val1 < val2;
-    } else if (op === ">=") {
-        return val1 >= val2;
-    } else if (op === "<=") {
-        return val1 <= val2;
-    }
-    
-    return null; // error!!  
-};
