@@ -215,7 +215,7 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         // Check extra sensors
         var precondition    = self.checkPrecondition();
         
-        self.log('Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', triggered:'+triggered+')');
+        self.log('Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', triggered: '+triggered+')');
         
         // Trigger light
         if (precondition === true 
@@ -224,7 +224,7 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
             self.switchDevice(true);
         // Retrigger light
         } else if (triggered === true && 
-            (! self.config.recheckPreconditions || precondition === true)) {
+            (! self.config.preconditions.recheck || precondition === true)) {
             // Reset timeouts
             self.resetTimeout();
             self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
@@ -249,7 +249,6 @@ MotionTrigger.prototype.checkInterval = function() {
     }
     
     var check = self.checkPrecondition();
-    self.log('Recheck interval '+check);
     if (! check) {
         self.untriggerDevice();
     }
@@ -318,18 +317,10 @@ MotionTrigger.prototype.checkPrecondition = function() {
     
     // Check time
     if (condition === true
-        && self.config.time.length > 0) {
+        && self.config.preconditions.time.length > 0) {
         var timeCondition = false;
-        _.each(self.config.time,function(time) {
+        _.each(self.config.preconditions.time,function(time) {
             if (timeCondition === true) {
-                return;
-            }
-            var timeFrom    = self.parseTime(time.timeFrom);
-            var timeTo      = self.parseTime(time.timeTo);
-            
-            // Check time
-            if (typeof(timeFrom) === 'undefined'
-                || typeof(timeTo) === 'undefined') {
                 return;
             }
             
@@ -341,23 +332,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
                 return;
             }
             
-            if (timeTo < timeFrom) {
-                if (timeTo.getDate() === dateNow.getDate()) {
-                    var fromHour   = timeFrom.getHours();
-                    var fromMinute = timeFrom.getMinutes();
-                    timeFrom.setHours(fromHour - 24);
-                    // Now fix time jump on DST
-                    timeFrom.setHours(fromHour,fromMinute);
-                } else {
-                    var toHour     = timeTo.getHours();
-                    var toMinute   = timeTo.getMinutes();
-                    timeTo.setHours(toHour + 24);
-                    // Now fix time jump on DST
-                    timeTo.setHours(toHour,toMinute);
-                }
-            }
-            
-            if (timeFrom > dateNow || dateNow > timeTo) {
+            if (! self.checkPeriod(time.timeFrom,time.timeTo)) {
                 self.log('Time does not match');
                 return;
             }
@@ -368,13 +343,13 @@ MotionTrigger.prototype.checkPrecondition = function() {
     }
     
     // Check binary
-    _.each(self.config.binary,function(check) {
+    _.each(self.config.preconditions.binary,function(check) {
         if (condition) {
             var device = self.controller.devices.get(check.device);
             if (typeof(device) !== 'undefined') {
                 var level = device.get('metrics:level');
                 if (check.value !== level) {
-                    self.log('Binary does not match');
+                    self.log('Binary does not match: '+device.id);
                     condition = false;
                 }
             } else {
@@ -384,13 +359,13 @@ MotionTrigger.prototype.checkPrecondition = function() {
     });
     
     // Check multilevel
-    _.each(self.config.multilevel,function(check) {
+    _.each(self.config.preconditions.multilevel,function(check) {
         if (condition) {
             var device = self.controller.devices.get(check.device);
             if (typeof(device) !== 'undefined') {
                 var level = device.get('metrics:level');
-                if (self.compare(check.value,check.operator,level)) {
-                    self.log('Multilevel does not match');
+                if (! self.compare(level,check.operator,check.value)) {
+                    self.log('Multilevel does not match: '+device.id);
                     condition = false;
                 }
             } else {
@@ -412,7 +387,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         
         self.lock = new Timeout(self,function() {},1000*5);
         
-        if (self.config.recheckPreconditions) {
+        if (self.config.preconditions.recheck) {
             self.resetInterval();
             self.interval = setInterval(
                 _.bind(self.checkInterval,self),
@@ -496,21 +471,20 @@ MotionTrigger.prototype.resetTimeout = function() {
 };
 
 // Condition comparison helper
-MotionTrigger.prototype.op = function (dval, op, val) {
+MotionTrigger.prototype.compare = function (val1, op, val2) {
     if (op === "=") {
-        return dval === val;
+        return val1 === val2;
     } else if (op === "!=") {
-        return dval !== val;
+        return val1 !== val2;
     } else if (op === ">") {
-        return dval > val;
+        return val1 > val2;
     } else if (op === "<") {
-        return dval < val;
+        return val1 < val2;
     } else if (op === ">=") {
-        return dval >= val;
+        return val1 >= val2;
     } else if (op === "<=") {
-        return dval <= val;
+        return val1 <= val2;
     }
-        
+    
     return null; // error!!  
 };
-
