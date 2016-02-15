@@ -1,412 +1,411 @@
 {
-    "author": "Maroš Kollár",
-    "category": "complex_applications",
-    "defaults": {
-        "description": "__m_descr__",
-        "recheckPreconditions": false,
-        "timeout": 180,
-        "title": "__m_title__"
-    },
-    "dependencies": [
-        "BaseModule"
-    ],
-    "homepage": "https://github.com/maros/Zway-MotionTrigger/",
-    "icon": "icon.png",
-    "maturity": "stable",
-    "moduleName": "MotionTrigger",
-    "options": {
-        "fields": {
-            "dimmer": {
-                "order": 5,
-                "fields": {
-                    "mode": {
-                        "optionLabels": [
-                            "__dimmer_mode_full__",
-                            "__dimmer_mode_static__",
-                            "__dimmer_mode_code__",
-                            "__dimmer_mode_dynamic__"
-                        ],
-                        "type": "select",
-                        "oder": 1,
-                        "label": "__dimmer_mode_label__",
-                        "helper": "__dimmer_mode_helper__"
-                    },
-                    "code": {
-                        "dependencies": {
-                            "mode": "code"
+   "author" : "Maroš Kollár",
+   "category" : "complex_applications",
+   "defaults" : {
+      "description" : "__m_descr__",
+      "recheckPreconditions" : false,
+      "timeout" : 180,
+      "title" : "__m_title__"
+   },
+   "dependencies" : [
+      "BaseModule"
+   ],
+   "homepage" : "https://github.com/maros/Zway-MotionTrigger/",
+   "icon" : "icon.png",
+   "maturity" : "stable",
+   "moduleName" : "MotionTrigger",
+   "options" : {
+      "fields" : {
+         "dimmer" : {
+            "fields" : {
+               "code" : {
+                  "dependencies" : {
+                     "mode" : "code"
+                  },
+                  "helper" : "__dimmer_code_helper__",
+                  "label" : "__dimmer_code_label__",
+                  "order" : 2,
+                  "type" : "textarea"
+               },
+               "dynamic" : {
+                  "dependencies" : {
+                     "mode" : "dynamic"
+                  },
+                  "fields" : {
+                     "levelMax" : {
+                        "label" : "__dimmer_dynamic_level_max_label__",
+                        "order" : 5
+                     },
+                     "levelMin" : {
+                        "label" : "__dimmer_dynamic_level_min_label__",
+                        "order" : 4
+                     },
+                     "luminosityDevice" : {
+                        "datasource" : "namespaces",
+                        "field" : "optionLabels",
+                        "label" : "__dimmer_dynamic_luminosity_device_label__",
+                        "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName",
+                        "order" : 1,
+                        "type" : "select"
+                     },
+                     "luminosityMax" : {
+                        "label" : "__dimmer_dynamic_luminosity_max_label__",
+                        "order" : 3
+                     },
+                     "luminosityMin" : {
+                        "label" : "__dimmer_dynamic_luminosity_min_label__",
+                        "order" : 2
+                     }
+                  },
+                  "label" : "__dimmer_dynamic_label__",
+                  "order" : 4
+               },
+               "mode" : {
+                  "helper" : "__dimmer_mode_helper__",
+                  "label" : "__dimmer_mode_label__",
+                  "oder" : 1,
+                  "optionLabels" : [
+                     "__dimmer_mode_full__",
+                     "__dimmer_mode_static__",
+                     "__dimmer_mode_code__",
+                     "__dimmer_mode_dynamic__"
+                  ],
+                  "type" : "select"
+               },
+               "static" : {
+                  "dependencies" : {
+                     "mode" : "static"
+                  },
+                  "label" : "__dimmer_static_label__",
+                  "order" : 3
+               }
+            },
+            "order" : 5,
+            "type" : "object"
+         },
+         "lights" : {
+            "fields" : {
+               "item" : {
+                  "datasource" : "namespaces",
+                  "field" : "optionLabels",
+                  "optionLabels" : "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
+                  "type" : "select"
+               }
+            },
+            "label" : "__lights_label__",
+            "order" : 2
+         },
+         "preconditions" : {
+            "fields" : {
+               "binary" : {
+                  "helper" : "__binary_helper__",
+                  "items" : {
+                     "fields" : {
+                        "device" : {
+                           "datasource" : "namespaces",
+                           "field" : "optionLabels",
+                           "label" : "",
+                           "optionLabels" : "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName",
+                           "order" : 1,
+                           "type" : "select"
                         },
-                        "label": "__dimmer_code_label__",
-                        "helper": "__dimmer_code_helper__",
-                        "order": 2,
-                        "type": "textarea"
-                    },
-                    "static": {
-                        "label": "__dimmer_static_label__",
-                        "dependencies": {
-                            "mode": "static"
-                        },
-                        "order": 3
-                    },
-                    "dynamic": {
-                        "label": "__dimmer_dynamic_label__",
-                        "dependencies": {
-                            "mode": "dynamic"
-                        },
-                        "order": 4,
-                        "fields": {
-                            "luminosityDevice": {
-                                "label": "__dimmer_dynamic_luminosity_device_label__",
-                                "datasource": "namespaces",
-                                "field": "optionLabels",
-                                "optionLabels": "namespaces:devices_sensorMultilevel:deviceName",
-                                "type": "select",
-                                "order": 1
-                            },
-                            "luminosityMin": {
-                                "label": "__dimmer_dynamic_luminosity_min_label__",
-                                "order": 2
-                            },
-                            "luminosityMax": {
-                                "label": "__dimmer_dynamic_luminosity_max_label__",
-                                "order": 3
-                            },
-                            "levelMin": {
-                                "label": "__dimmer_dynamic_level_min_label__",
-                                "order": 4
-                            },
-                            "levelMax": {
-                                "label": "__dimmer_dynamic_level_max_label__",
-                                "order": 5
-                            }
+                        "value" : {
+                           "order" : 2
                         }
-                    }
-                },
-                "type": "object"
-            },
-            "lights": {
-                "fields": {
-                    "item": {
-                        "datasource": "namespaces",
-                        "field": "optionLabels",
-                        "optionLabels": "namespaces:devices_switchBinary:deviceName,namespaces:devices_switchMultilevel:deviceName",
-                        "type": "select"
-                    }
-                },
-                "label": "__lights_label__",
-                "order": 2
-            },
-            "preconditions": {
-                "helper": "__preconditions_helper__",
-                "label": "__preconditions_label__",
-                "order": 3,
-                "fields": {
-                    "recheck": {
-                        "helper": "__recheck_preconditions_helper__",
-                        "label": "__recheck_preconditions_label__",
-                        "order": 4
-                    },
-                    "binary": {
-                        "helper": "__binary_helper__",
-                        "label": "__binary_label__",
-                        "order": 1,
-                        "items": {
-                            "fields": {
-                                "device": {
-                                    "datasource": "namespaces",
-                                    "field": "optionLabels",
-                                    "label": "",
-                                    "optionLabels": "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName",
-                                    "order": 1,
-                                    "type": "select"
-                                },
-                                "value": {
-                                    "order": 2
-                                }
-                            }
-                        }
-                    },
-                    "multilevel": {
-                        "label": "__multilevel_label__",
-                        "order": 2,
-                        "helper": "__multilevel_helper__",
-                        "items": {
-                            "fields": {
-                                "device": {
-                                    "datasource": "namespaces",
-                                    "field": "optionLabels",
-                                    "label": "",
-                                    "optionLabels": "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName",
-                                    "order": 1,
-                                    "type": "select"
-                                },
-                                "operator": {
-                                    "optionLabels": [
-                                        "=",
-                                        "≠",
-                                        ">",
-                                        "≥",
-                                        "<",
-                                        "≤"
-                                    ],
-                                    "order": 2,
-                                    "type": "select"
-                                },
-                                "value": {
-                                    "order": 3
-                                }
-                            }
-                        }
-                    },
-                    "time": {
-                        "helper": "__time_helper__",
-                        "label": "__time_label__",
-                        "order": 3,
-                        "items": {
-                            "fields": {
-                                "dayofweek": {
-                                    "label": "__dayofweek_label__",
-                                    "optionLabels": [
-                                        "__dayofweek_0__",
-                                        "__dayofweek_1__",
-                                        "__dayofweek_2__",
-                                        "__dayofweek_3__",
-                                        "__dayofweek_4__",
-                                        "__dayofweek_5__",
-                                        "__dayofweek_6__"
-                                    ],
-                                    "type": "checkbox"
-                                },
-                                "timeFrom": {
-                                    "label": "__time_from_label__",
-                                    "maskString": "99:99",
-                                    "order": 1,
-                                    "placeholder": "__time_placeholder__",
-                                    "type": "time"
-                                },
-                                "timeTo": {
-                                    "label": "__time_to_label__",
-                                    "maskString": "99:99",
-                                    "order": 2,
-                                    "placeholder": "__time_placeholder__",
-                                    "type": "time"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "securitySensors": {
-                "fields": {
-                    "item": {
-                        "datasource": "namespaces",
-                        "field": "devices",
-                        "optionLabels": "namespaces:devices_sensorBinary:deviceName",
-                        "type": "select"
-                    }
-                },
-                "label": "__security_sensors_label__",
-                "order": 1
-            },
-            "timeout": {
-                "helper": "__timeout_helper__",
-                "label": "__timeout_label__",
-                "order": 4
-            }
-        }
-    },
-    "repository": {
-        "source": "https://github.com/maros/Zway-MotionTrigger",
-        "type": "git"
-    },
-    "schema": {
-        "properties": {
-            "dimmer": {
-                "properties": {
-                    "mode": {
-                        "enum": [
-                            "full",
-                            "static",
-                            "code",
-                            "dynamic"
-                        ],
-                        "default": "full",
-                        "required": true,
-                        "type": "string"
-                    },
-                    "code": {
-                        "type": "string",
-                        "dependencies": "mode"
-                    },
-                    "static": {
-                        "dependencies": "mode",
-                        "type": "number"
-                    },
-                    "dynamic": {
-                        "dependencies": "mode",
-                        "type": "object",
-                        "properties": {
-                            "luminosityDevice": {
-                                "datasource": "namespaces",
-                                "field": "enum",
-                                "enum": "namespaces:devices_sensorMultilevel:deviceId",
-                                "required": true
-                            },
-                            "luminosityMin": {
-                                "required": true,
-                                "minimum": 0,
-                                "maximum": 1000,
-                                "type": "integer"
-                             },
-                             "luminosityMax": {
-                                "required": true,
-                                "minimum": 0,
-                                "maximum": 1000,
-                                "type": "integer"
-                             },
-                             "levelMin": {
-                                "required": true,
-                                "minimum": 0,
-                                "maximum": 100,
-                                "type": "integer"
-                             },
-                             "levelMax": {
-                                "required": true,
-                                "minimum": 0,
-                                "maximum": 100,
-                                "required": true,
-                                "type": "integer"
-                             }
-                        }
-                    }
-                },
-                "type": "object"
-            },
-            "lights": {
-                "items": {
-                    "datasource": "namespaces",
-                    "enum": "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
-                    "field": "enum",
-                    "required": true
-                },
-                "minItems": 1,
-                "type": "array",
-                "uniqueItems": true
-            },
-            "preconditions": {
-                "properties": {
-                    "recheck": {
-                        "required": true,
-                        "type": "boolean"
-                    },
-                    "binary": {
-                        "items": {
-                            "properties": {
-                                "device": {
-                                    "datasource": "namespaces",
-                                    "enum": "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
-                                    "field": "enum",
-                                    "required": true
-                                },
-                                "value": {
-                                    "default": "on",
-                                    "enum": [
-                                        "off",
-                                        "on"
-                                    ],
-                                    "required": true,
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
+                     }
+                  },
+                  "label" : "__binary_label__",
+                  "order" : 1
+               },
+               "multilevel" : {
+                  "helper" : "__multilevel_helper__",
+                  "items" : {
+                     "fields" : {
+                        "device" : {
+                           "datasource" : "namespaces",
+                           "field" : "optionLabels",
+                           "label" : "",
+                           "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName",
+                           "order" : 1,
+                           "type" : "select"
                         },
-                        "type": "array"
-                    },
-                    "multilevel": {
-                        "items": {
-                            "properties": {
-                                "device": {
-                                    "datasource": "namespaces",
-                                    "enum": "namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_battery:deviceId",
-                                    "field": "enum",
-                                    "required": true
-                                },
-                                "operator": {
-                                    "enum": [
-                                        "=",
-                                        "!=",
-                                        ">",
-                                        ">=",
-                                        "<",
-                                        "<="
-                                    ],
-                                    "required": true,
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "required": true,
-                                    "type": "number"
-                                }
-                            },
-                            "type": "object"
+                        "operator" : {
+                           "optionLabels" : [
+                              "=",
+                              "≠",
+                              ">",
+                              "≥",
+                              "<",
+                              "≤"
+                           ],
+                           "order" : 2,
+                           "type" : "select"
                         },
-                        "type": "array"
-                    },
-                    "time": {
-                        "items": {
-                            "properties": {
-                                "dayofweek": {
-                                    "enum": [
-                                        "0",
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "6"
-                                    ],
-                                    "type": "array"
-                                },
-                                "timeFrom": {
-                                    "pattern": "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
-                                    "placeholder": "__time_placeholder__",
-                                    "required": true,
-                                    "type": "string"
-                                },
-                                "timeTo": {
-                                    "pattern": "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
-                                    "placeholder": "__time_placeholder__",
-                                    "required": true,
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
+                        "value" : {
+                           "order" : 3
+                        }
+                     }
+                  },
+                  "label" : "__multilevel_label__",
+                  "order" : 2
+               },
+               "recheck" : {
+                  "helper" : "__recheck_preconditions_helper__",
+                  "label" : "__recheck_preconditions_label__",
+                  "order" : 4
+               },
+               "time" : {
+                  "helper" : "__time_helper__",
+                  "items" : {
+                     "fields" : {
+                        "dayofweek" : {
+                           "label" : "__dayofweek_label__",
+                           "optionLabels" : [
+                              "__dayofweek_0__",
+                              "__dayofweek_1__",
+                              "__dayofweek_2__",
+                              "__dayofweek_3__",
+                              "__dayofweek_4__",
+                              "__dayofweek_5__",
+                              "__dayofweek_6__"
+                           ],
+                           "type" : "checkbox"
                         },
-                        "type": "array"
-                    }
-                },
-                "required": true,
-                "type": "object"
+                        "timeFrom" : {
+                           "label" : "__time_from_label__",
+                           "maskString" : "99:99",
+                           "order" : 1,
+                           "placeholder" : "__time_placeholder__",
+                           "type" : "time"
+                        },
+                        "timeTo" : {
+                           "label" : "__time_to_label__",
+                           "maskString" : "99:99",
+                           "order" : 2,
+                           "placeholder" : "__time_placeholder__",
+                           "type" : "time"
+                        }
+                     }
+                  },
+                  "label" : "__time_label__",
+                  "order" : 3
+               }
             },
-            "securitySensors": {
-                "items": {
-                    "datasource": "namespaces",
-                    "enum": "namespaces:devices_sensorBinary:deviceId",
-                    "field": "enum",
-                    "required": true
-                },
-                "minItems": 1,
-                "type": "array",
-                "uniqueItems": true
+            "helper" : "__preconditions_helper__",
+            "label" : "__preconditions_label__",
+            "order" : 3
+         },
+         "securitySensors" : {
+            "fields" : {
+               "item" : {
+                  "datasource" : "namespaces",
+                  "field" : "devices",
+                  "optionLabels" : "namespaces:devices_sensorBinary:deviceName",
+                  "type" : "select"
+               }
             },
-            "timeout": {
-                "minimum": 1,
-                "required": true,
-                "type": "integer"
-            }
-        },
-        "required": true,
-        "type": "object"
-    },
-    "singleton": false,
-    "version": 1.04
+            "label" : "__security_sensors_label__",
+            "order" : 1
+         },
+         "timeout" : {
+            "helper" : "__timeout_helper__",
+            "label" : "__timeout_label__",
+            "order" : 4
+         }
+      }
+   },
+   "repository" : {
+      "source" : "https://github.com/maros/Zway-MotionTrigger",
+      "type" : "git"
+   },
+   "schema" : {
+      "properties" : {
+         "dimmer" : {
+            "properties" : {
+               "code" : {
+                  "dependencies" : "mode",
+                  "type" : "string"
+               },
+               "dynamic" : {
+                  "dependencies" : "mode",
+                  "properties" : {
+                     "levelMax" : {
+                        "maximum" : 100,
+                        "minimum" : 0,
+                        "required" : true,
+                        "type" : "integer"
+                     },
+                     "levelMin" : {
+                        "maximum" : 100,
+                        "minimum" : 0,
+                        "required" : true,
+                        "type" : "integer"
+                     },
+                     "luminosityDevice" : {
+                        "datasource" : "namespaces",
+                        "enum" : "namespaces:devices_sensorMultilevel:deviceId",
+                        "field" : "enum",
+                        "required" : true
+                     },
+                     "luminosityMax" : {
+                        "maximum" : 1000,
+                        "minimum" : 0,
+                        "required" : true,
+                        "type" : "integer"
+                     },
+                     "luminosityMin" : {
+                        "maximum" : 1000,
+                        "minimum" : 0,
+                        "required" : true,
+                        "type" : "integer"
+                     }
+                  },
+                  "type" : "object"
+               },
+               "mode" : {
+                  "default" : "full",
+                  "enum" : [
+                     "full",
+                     "static",
+                     "code",
+                     "dynamic"
+                  ],
+                  "required" : true,
+                  "type" : "string"
+               },
+               "static" : {
+                  "dependencies" : "mode",
+                  "type" : "number"
+               }
+            },
+            "type" : "object"
+         },
+         "lights" : {
+            "items" : {
+               "datasource" : "namespaces",
+               "enum" : "namespaces:devices_switchBinary:deviceId,namespaces:devices_switchMultilevel:deviceId",
+               "field" : "enum",
+               "required" : true
+            },
+            "minItems" : 1,
+            "type" : "array",
+            "uniqueItems" : true
+         },
+         "preconditions" : {
+            "properties" : {
+               "binary" : {
+                  "items" : {
+                     "properties" : {
+                        "device" : {
+                           "datasource" : "namespaces",
+                           "enum" : "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
+                           "field" : "enum",
+                           "required" : true
+                        },
+                        "value" : {
+                           "default" : "on",
+                           "enum" : [
+                              "off",
+                              "on"
+                           ],
+                           "required" : true,
+                           "type" : "string"
+                        }
+                     },
+                     "type" : "object"
+                  },
+                  "type" : "array"
+               },
+               "multilevel" : {
+                  "items" : {
+                     "properties" : {
+                        "device" : {
+                           "datasource" : "namespaces",
+                           "enum" : "namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_battery:deviceId",
+                           "field" : "enum",
+                           "required" : true
+                        },
+                        "operator" : {
+                           "enum" : [
+                              "=",
+                              "!=",
+                              ">",
+                              ">=",
+                              "<",
+                              "<="
+                           ],
+                           "required" : true,
+                           "type" : "string"
+                        },
+                        "value" : {
+                           "required" : true,
+                           "type" : "number"
+                        }
+                     },
+                     "type" : "object"
+                  },
+                  "type" : "array"
+               },
+               "recheck" : {
+                  "required" : true,
+                  "type" : "boolean"
+               },
+               "time" : {
+                  "items" : {
+                     "properties" : {
+                        "dayofweek" : {
+                           "enum" : [
+                              "0",
+                              "1",
+                              "2",
+                              "3",
+                              "4",
+                              "5",
+                              "6"
+                           ],
+                           "type" : "array"
+                        },
+                        "timeFrom" : {
+                           "pattern" : "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
+                           "placeholder" : "__time_placeholder__",
+                           "required" : true,
+                           "type" : "string"
+                        },
+                        "timeTo" : {
+                           "pattern" : "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
+                           "placeholder" : "__time_placeholder__",
+                           "required" : true,
+                           "type" : "string"
+                        }
+                     },
+                     "type" : "object"
+                  },
+                  "type" : "array"
+               }
+            },
+            "required" : true,
+            "type" : "object"
+         },
+         "securitySensors" : {
+            "items" : {
+               "datasource" : "namespaces",
+               "enum" : "namespaces:devices_sensorBinary:deviceId",
+               "field" : "enum",
+               "required" : true
+            },
+            "minItems" : 1,
+            "type" : "array",
+            "uniqueItems" : true
+         },
+         "timeout" : {
+            "minimum" : 1,
+            "required" : true,
+            "type" : "integer"
+         }
+      },
+      "required" : true,
+      "type" : "object"
+   },
+   "singleton" : false,
+   "version" : 1.05
 }
