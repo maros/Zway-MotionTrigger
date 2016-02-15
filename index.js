@@ -407,7 +407,23 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                 }
                 break;
             case 'dynamic':
-                // TODO
+                var dimmerConfig        = self.config.dimmer.dynamic;
+                var luminosityDevice    = self.controller.devices.get(dimmerConfig.luminosityDevice);
+                if (luminosityDevice === null) {
+                    self.error('Could not find luminosity device');
+                    break;
+                }
+                var luminosityLevel     = luminosityDevice.get('metrics:level');
+                var luminosityWindow    = (dimmerConfig.luminosityMax - dimmerConfig.luminosityMin);
+                
+                if (luminosityLevel < dimmerConfig.luminosityMin)
+                    luminosityLevel = dimmerConfig.luminosityMin;
+                if (luminosityLevel > dimmerConfig.luminosityMax)
+                    luminosityLevel = dimmerConfig.luminosityMax;
+                
+                var luminosityPercent   = (((luminosity-dimmerConfig.luminosityMin)/luminosityWindow)*100);
+                dimmerLevel             = ((1/100)*((luminosityPercent*dimmerConfig.levelMax)+(100*dimmerConfig.levelMin)-(luminosityPercent*dimmerConfig.levelMax)));
+                
                 break;
         }
         

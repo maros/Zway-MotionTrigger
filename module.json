@@ -17,7 +17,7 @@
     "options": {
         "fields": {
             "dimmer": {
-                "order": 3,
+                "order": 5,
                 "fields": {
                     "mode": {
                         "optionLabels": [
@@ -49,11 +49,36 @@
                     },
                     "dynamic": {
                         "label": "__dimmer_dynamic_label__",
-                        "order": 4,
                         "dependencies": {
                             "mode": "dynamic"
                         },
-                        "fields": {}
+                        "order": 4,
+                        "fields": {
+                            "luminosityDevice": {
+                                "label": "__dimmer_dynamic_luminosity_device_label__",
+                                "datasource": "namespaces",
+                                "field": "optionLabels",
+                                "optionLabels": "namespaces:devices_sensorMultilevel:deviceName",
+                                "type": "select",
+                                "order": 1
+                            },
+                            "luminosityMin": {
+                                "label": "__dimmer_dynamic_luminosity_min_label__",
+                                "order": 2
+                            },
+                            "luminosityMax": {
+                                "label": "__dimmer_dynamic_luminosity_max_label__",
+                                "order": 3
+                            },
+                            "levelMin": {
+                                "label": "__dimmer_dynamic_level_min_label__",
+                                "order": 4
+                            },
+                            "levelMax": {
+                                "label": "__dimmer_dynamic_level_max_label__",
+                                "order": 5
+                            }
+                        }
                     }
                 },
                 "type": "object"
@@ -73,7 +98,7 @@
             "preconditions": {
                 "helper": "__preconditions_helper__",
                 "label": "__preconditions_label__",
-                "order": 5,
+                "order": 3,
                 "fields": {
                     "recheck": {
                         "helper": "__recheck_preconditions_helper__",
@@ -185,7 +210,7 @@
             "timeout": {
                 "helper": "__timeout_helper__",
                 "label": "__timeout_label__",
-                "order": 8
+                "order": 4
             }
         }
     },
@@ -219,7 +244,39 @@
                     "dynamic": {
                         "dependencies": "mode",
                         "type": "object",
-                        "properties": {}
+                        "properties": {
+                            "luminosityDevice": {
+                                "datasource": "namespaces",
+                                "field": "enum",
+                                "enum": "namespaces:devices_sensorMultilevel:deviceId",
+                                "required": true
+                            },
+                            "luminosityMin": {
+                                "required": true,
+                                "minimum": 0,
+                                "maximum": 1000,
+                                "type": "integer"
+                             },
+                             "luminosityMax": {
+                                "required": true,
+                                "minimum": 0,
+                                "maximum": 1000,
+                                "type": "integer"
+                             },
+                             "levelMin": {
+                                "required": true,
+                                "minimum": 0,
+                                "maximum": 100,
+                                "type": "integer"
+                             },
+                             "levelMax": {
+                                "required": true,
+                                "minimum": 0,
+                                "maximum": 100,
+                                "required": true,
+                                "type": "integer"
+                             }
+                        }
                     }
                 },
                 "type": "object"
