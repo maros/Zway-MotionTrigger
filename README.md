@@ -13,40 +13,48 @@ not triggered if any of the selected devices is already turned on.
 Multiple devices that should be triggered. Trigger will not be fired if any 
 of these devices is already turned on.
 
-## extraLights
-
-Extra devices that should be checked. Trigger will not be fired if any of
-these devices is already turned on.
-
 ## securitySensors
 
-Security sensors that trigger lights
+Security sensors that trigger lights. It is sufficient for one security 
+sensor to be triggered.
+
+## timeout
+
+Trigger timeout duration after the last security sensor has been untripped.
+(in seconds)
 
 ## preconditions
 
 Multiple optional conditions to check before a switch will be triggered. 
 Luminosity sensors, and the Astronomy module from 
 https://github.com/maros/Zway-Astronomy are particularly well suited to 
-be included in such condition checks.
+be included in such condition checks. Can also to prevent triggering lights
+if any other light is already switched on.
 
-## preconditions.device
+## preconditions.time.timeFrom, preconditions.time.timeTo, preconditions.time.dayofweek
 
-Device to check. Must be a multilevel sensor.
+Multiple time periods when the motion trigger should be active. 
+Time in HH:MM format
 
-## preconditions.testOperator
+## preconditions.binary.device, preconditions.multilevel.device
 
-Operator to be used for the check
+Multiple devices to check. Must be either a binar or multilevel sensor.
 
-## preconditions.testValue
+## preconditions.multilevel.device
 
-Value to be used for the check
+Operators to be used for the multilevel checks
 
-## duration
+## preconditions.binary.value, preconditions.multilevel.value
 
-Trigger timeout duration after the last security sensor has been untripped.
-(in seconds)
+Values to be used for the precondition checks
 
-## dimmer.mode, dimmer.static, dimmer.code
+## preconditions.recheck
+
+If this option is checked, all preconditions will be rechecked regularly.
+Otherwise preconditions will be only checked once when the light is about
+to be triggered
+
+## dimmer.mode, dimmer.static, dimmer.code, dimmer.dynamic
 
 Sets how the dimmer level sould be determined. 
 
@@ -54,14 +62,6 @@ Sets how the dimmer level sould be determined.
 * Static: Sets the dimmer level to a user-defined value
 * Code: Executes a user-provided JavaScript code to calculate the dimmer level
 * Dynamic: Calculate dimmer based on luminosity
-
-## timeActive
-
-List of time periods when the trigger should be activated
-
-## timeActive.start, timeActive.end
-
-Time in HH:MM format
 
 # Virtual Devices
 
