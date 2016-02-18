@@ -346,7 +346,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
     _.each(self.config.preconditions.binary,function(check) {
         if (condition) {
             var device = self.controller.devices.get(check.device);
-            if (typeof(device) !== 'undefined') {
+            if (! _.isNull(device)) {
                 var level = device.get('metrics:level');
                 if (check.value !== level) {
                     self.log('Binary does not match: '+device.id);
@@ -362,7 +362,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
     _.each(self.config.preconditions.multilevel,function(check) {
         if (condition) {
             var device = self.controller.devices.get(check.device);
-            if (typeof(device) !== 'undefined') {
+            if (! _.isNull(device)) {
                 var level = device.get('metrics:level');
                 if (! self.compare(level,check.operator,check.value)) {
                     self.log('Multilevel does not match: '+device.id);
