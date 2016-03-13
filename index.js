@@ -40,7 +40,7 @@ MotionTrigger.prototype.init = function (config) {
             metrics: {
                 level: 'off',
                 title: self.langFile.m_title,
-                icon: "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_off.png",
+                icon: self.imagePath+'/icon_off.png',
                 triggered: false,
                 timeout: null
             }
@@ -55,7 +55,7 @@ MotionTrigger.prototype.init = function (config) {
                 return;
             }
             this.set("metrics:level", command);
-            this.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+command+".png");
+            this.set("metrics:icon", self.imagePath+'/icon_'+command+".png");
             if (command === 'off') {
                 self.resetInterval();
                 self.resetTimeout();
@@ -227,7 +227,7 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
             (! self.config.preconditions.recheck || precondition === true)) {
             // Reset timeouts
             self.resetTimeout();
-            self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
+            self.vDev.set("metrics:icon", self.imagePath+'/icon_triggered.png');
         }
     // Untriggered sensor
     } else if (sensors === false 
@@ -264,7 +264,7 @@ MotionTrigger.prototype.untriggerDevice = function() {
         self.log('Untriggered security sensor. Starting timeout');
         var timeoutRel = parseInt(self.config.timeout,10) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
-        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_timeout.png");
+        self.vDev.set("metrics:icon", self.imagePath+'/icon_timeout.png');
         self.timeout = setTimeout(
             _.bind(self.switchDevice,self,false),
             timeoutRel
@@ -383,7 +383,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     var level = self.vDev.get('metrics:level');
     var dimmerLevel = 99;
     if (level === 'on' && mode === true) {
-        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_triggered.png");
+        self.vDev.set("metrics:icon", self.imagePath+'/icon_triggered.png');
         
         self.lock = new Timeout(self,function() {},1000*5);
         
@@ -432,7 +432,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         }
     } else {
         self.resetInterval();
-        self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/MotionTrigger/icon_"+level+".png");
+        self.vDev.set("metrics:icon", self.imagePath+'/icon_'+level+".png");
     }
     
     self.resetTimeout();
@@ -440,21 +440,20 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     
     self.log('Turning '+(mode ? 'on':'off'));
     
+    // Fake switching
     self.processDeviceList(self.config.lights,function(deviceObject) {
+        var targetLevel;
         if (deviceObject.get('deviceType') === 'switchBinary') {
-            deviceObject.performCommand((mode) ? 'on':'off');
+            targetLevel = (mode) ? 'on':'off';
         } else if (deviceObject.get('deviceType') === 'switchMultilevel') {
-            var level = (mode) ? dimmerLevel:0;
-            if (level ===  0) {
-                deviceObject.performCommand('off');
-            } else {
-                deviceObject.performCommand('exact',{ level: level });
-            }
+            targetLevel = (mode) ? dimmerLevel:0;
         } else {
             self.error('Unspported device type '+deviceObject.get('deviceType'));
             return;
         }
-        deviceObject.set('metrics:auto',mode);
+        self.log('Set '+deviceObject.id+' '+targetLevel);
+        deviceObject.set('metrics:level',targetLevel,{ silent: true, setOnly: true });
+        deviceObject.set('metrics:auto',mode,{ silent: true, setOnly: true });
     });
     
     self.controller.emit('light.'+(mode ? 'on':'off'),{ 
@@ -462,6 +461,34 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         title:      self.vDev.get('metrics:title'),
         location:   self.vDev.get('metrics:location'),
         mode:       mode
+    });
+    
+    // Real turning off
+    self.processDeviceList(self.config.lights,function(deviceObject) {
+        var level = deviceObject.get('metrics:level');
+        var targetLevel;
+        
+        if (deviceObject.get('deviceType') === 'switchBinary') {
+            targetLevel = (mode) ? 'on':'off';
+            if (level === targetLevel) {
+                self.log('Turn '+deviceObject.id+' '+targetLevel);
+                deviceObject.performCommand(targetLevel);
+            } else {
+                self.log('Keep '+deviceObject.id);
+            }
+        } else if (deviceObject.get('deviceType') === 'switchMultilevel') {
+            targetLevel = (mode) ? dimmerLevel:0;
+            if (targetLevel === level) {
+                self.log('Turn '+deviceObject.id+' '+targetLevel);
+                if (level ===  0) {
+                    deviceObject.performCommand('off');
+                } else {
+                    deviceObject.performCommand('exact',{ level: level });
+                }
+            } else {
+                self.log('Keep '+deviceObject.id);
+            }
+        }
     });
 };
 
