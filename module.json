@@ -176,14 +176,16 @@
                            "maskString" : "99:99",
                            "order" : 1,
                            "placeholder" : "__time_placeholder__",
-                           "type" : "time"
+                           "type" : "time",
+                           "dateFormat": "HH:mm"
                         },
                         "timeTo" : {
                            "label" : "__time_to_label__",
                            "maskString" : "99:99",
                            "order" : 2,
                            "placeholder" : "__time_placeholder__",
-                           "type" : "time"
+                           "type" : "time",
+                           "dateFormat": "HH:mm"
                         }
                      }
                   },
@@ -366,16 +368,14 @@
                            "type" : "array"
                         },
                         "timeFrom" : {
-                           "pattern" : "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
-                           "placeholder" : "__time_placeholder__",
                            "required" : true,
-                           "type" : "string"
+                           "type" : "string",
+                           "format": "time"
                         },
                         "timeTo" : {
-                           "pattern" : "^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
-                           "placeholder" : "__time_placeholder__",
                            "required" : true,
-                           "type" : "string"
+                           "type" : "string",
+                           "format": "time"
                         }
                      },
                      "type" : "object"
