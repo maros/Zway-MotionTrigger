@@ -192,11 +192,10 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
     
     // Check trigger device on
     if (self.vDev.get('metrics:level') !== 'on') {
+        self.log('Ignoring change to '+mode+': Controller off');
         return;
-    }
-    
     // Check if actual change happened
-    if (typeof(vDev) === 'object'
+    } else if (typeof(vDev) === 'object'
         && vDev instanceof VirtualDevice) {
         self.log('Handle change to '+mode+' from '+vDev.id);
     } else {
@@ -215,7 +214,7 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         // Check extra sensors
         var precondition    = self.checkPrecondition();
         
-        self.log('Triggered security sensor (preconditions: '+precondition+', lights: '+lights+', triggered: '+triggered+')');
+        self.log('Triggered motion sensor (preconditions: '+precondition+', lights: '+lights+', triggered: '+triggered+')');
         
         // Trigger light
         if (precondition === true 
@@ -235,6 +234,8 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         && triggered === true
         && typeof(self.timeout) === 'undefined') {
         self.untriggerDevice();
+    } else {
+        self.log('Ignoring. Sensor: '+sensors+' Triggered: '+triggered+' Mode: '+mode);
     }
 };
 
