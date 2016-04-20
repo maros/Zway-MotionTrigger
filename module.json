@@ -172,20 +172,20 @@
                            "type" : "checkbox"
                         },
                         "timeFrom" : {
+                           "dateFormat" : "HH:mm",
                            "label" : "__time_from_label__",
                            "maskString" : "99:99",
                            "order" : 1,
                            "placeholder" : "__time_placeholder__",
-                           "type" : "time",
-                           "dateFormat": "HH:mm"
+                           "type" : "time"
                         },
                         "timeTo" : {
+                           "dateFormat" : "HH:mm",
                            "label" : "__time_to_label__",
                            "maskString" : "99:99",
                            "order" : 2,
                            "placeholder" : "__time_placeholder__",
-                           "type" : "time",
-                           "dateFormat": "HH:mm"
+                           "type" : "time"
                         }
                      }
                   },
@@ -368,14 +368,14 @@
                            "type" : "array"
                         },
                         "timeFrom" : {
+                           "format" : "time",
                            "required" : true,
-                           "type" : "string",
-                           "format": "time"
+                           "type" : "string"
                         },
                         "timeTo" : {
+                           "format" : "time",
                            "required" : true,
-                           "type" : "string",
-                           "format": "time"
+                           "type" : "string"
                         }
                      },
                      "type" : "object"
@@ -407,5 +407,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.05
+   "version" : 1.06
 }

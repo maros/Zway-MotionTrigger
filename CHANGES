@@ -1,3 +1,11 @@
+1.06 2016 Apr 20, Wed
+    * More verbose logging
+    * Fix time fields in module.json
+    * Cleannup probeType
+    * Update installation howto
+    * Use imagePath from BaseModule
+    * Check deveice with is null and not definedness
+
 1.05 2016 Feb 15, Mon
     * Dynamic dimmer level calculation
     * Refactor preconditions
