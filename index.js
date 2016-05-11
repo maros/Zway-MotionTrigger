@@ -154,7 +154,7 @@ MotionTrigger.prototype.stop = function() {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
-MotionTrigger.prototyoe.handlePoll = function() {
+MotionTrigger.prototype.handlePoll = function() {
     var self = this;
     
     // Check trigger device on, triggered
