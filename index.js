@@ -18,7 +18,8 @@ function MotionTrigger (id, controller) {
     this.timeout        = undefined;
     this.callbackEvent  = undefined;
     this.callbackSensor = undefined;
-    this.interval       = undefined;
+    this.checkInterval  = undefined;
+    this.pollInterval   = undefined;
 }
 
 inherits(MotionTrigger, BaseModule);
@@ -75,7 +76,12 @@ MotionTrigger.prototype.init = function (config) {
     self.callbackSensor = _.bind(self.handleSensor,self);
     self.callbackEvent  = _.bind(self.handleEvent,self);
     self.callbackLight  = _.bind(self.handleLight,self);
-    
+
+    if (typeof(self.config.pollSensors) === 'number'
+        && self.config.pollSensors > 0) {
+        self.callbackPoll   = _.bind(self.handlePoll,self);
+        self.pollInterval   = setInterval(self.callbackPoll,1000*60*self.config.pollSensors);
+    }
     self.controller.on('light.off',self.callbackEvent);
     setTimeout(_.bind(self.initCallback,self),10000);
 };
@@ -123,6 +129,12 @@ MotionTrigger.prototype.stop = function() {
     
     self.controller.off('light.off',self.callbackEvent);
     
+    if (typeof(self.pollInterval) !== 'undefined') {
+        clearInterval(self.pollInterval);
+        self.pollInterval   = undefined;
+        self.callbackPoll   = undefined;
+    }
+
     self.callbackEvent  = undefined;
     self.callbackSensor = undefined;
     self.callbackLight  = undefined;
@@ -141,6 +153,20 @@ MotionTrigger.prototype.stop = function() {
 // ----------------------------------------------------------------------------
 // --- Module methods
 // ----------------------------------------------------------------------------
+
+MotionTrigger.prototyoe.handlePoll = function() {
+    var self = this;
+    
+    // Check trigger device on, triggered
+    if (self.vDev.get('metrics:level') !== 'on'
+        || self.vDev.get('metrics:triggered') === false) {
+        return;
+    }
+    
+    self.processDeviceList(self.config.securitySensors,function(deviceObject) {
+        deviceObject.performCommand('update');
+    });
+};
 
 MotionTrigger.prototype.handleLight = function(vDev) {
     var self = this;
@@ -390,7 +416,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         
         if (self.config.preconditions.recheck) {
             self.resetInterval();
-            self.interval = setInterval(
+            self.checkInterval = setInterval(
                 _.bind(self.checkInterval,self),
                 (1000 * 30)
             );
@@ -497,9 +523,9 @@ MotionTrigger.prototype.switchDevice = function(mode) {
 MotionTrigger.prototype.resetInterval = function() {
     var self = this;
     
-    if (typeof(self.interval) === 'undefined') {
-        clearInterval(self.interval);
-        self.interval = undefined;
+    if (typeof(self.checkInterval) === 'undefined') {
+        clearInterval(self.checkInterval);
+        self.checkInterval = undefined;
     }
 };
 

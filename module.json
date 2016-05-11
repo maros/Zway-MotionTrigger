@@ -80,7 +80,7 @@
                   "order" : 3
                }
             },
-            "order" : 5,
+            "order" : 6,
             "type" : "object"
          },
          "lights" : {
@@ -208,6 +208,11 @@
             },
             "label" : "__security_sensors_label__",
             "order" : 1
+         },
+         "pollSensors": {
+             "helper" : "__poll_sensors_helper__",
+             "label" : "__poll_sensors_label__",
+             "order" : 5
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
@@ -397,6 +402,9 @@
             "type" : "array",
             "uniqueItems" : true
          },
+         "pollSensors" : {
+             "type" : "integer"
+          },
          "timeout" : {
             "minimum" : 1,
             "required" : true,
