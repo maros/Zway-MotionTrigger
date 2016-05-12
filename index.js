@@ -265,7 +265,7 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
     }
 };
 
-MotionTrigger.prototype.checkInterval = function() {
+MotionTrigger.prototype.handleCheck = function() {
     var self = this;
     
     // Check trigger device on, triggered and no timeout
@@ -417,7 +417,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         if (self.config.preconditions.recheck) {
             self.resetInterval();
             self.checkInterval = setInterval(
-                _.bind(self.checkInterval,self),
+                _.bind(self.handleCheck,self),
                 (1000 * 30)
             );
         }
