@@ -3,9 +3,20 @@
    "category" : "complex_applications",
    "defaults" : {
       "description" : "__m_descr__",
-      "recheckPreconditions" : false,
       "timeout" : 180,
-      "title" : "__m_title__"
+      "title" : "__m_title__",
+      "securitySensors": [],
+      "timeout": 60,
+      "lights": [],
+      "dimmer": {
+        "mode": "full"
+      },
+      "preconditions": {
+        "recheck": false,
+        "binary": [],
+        "multilevel": [],
+        "time": []
+      }
    },
    "dependencies" : [
       "BaseModule"
