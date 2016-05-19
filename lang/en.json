@@ -29,7 +29,7 @@
    "extra_lights_label" : "Extra Lights",
    "lights_label" : "Tigger lights",
    "m_descr" : "Trigger lights based on security sensors like motion or door sensors. Lets you specify multiple devices to trigger, preconditions to check and a delay for turning off lights.<br>Check <a href=https://github.com/maros/Zway-MotionTrigger/blob/master/README.md>github.com/maros/Zway-MotionTrigger</a> for detailed documentation.",
-   "m_title" : "Smart light triggers",
+   "m_title" : "Light Motion Trigger",
    "multilevel_helper" : "Multilevel conditions that need to be met before triggering light",
    "multilevel_label" : "Multilevel precondition",
    "poll_sensors_helper" : "Poll sensors interval (in seconds) when light was triggered",
