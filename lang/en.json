@@ -32,6 +32,8 @@
    "m_title" : "Smart light triggers",
    "multilevel_helper" : "Multilevel conditions that need to be met before triggering light",
    "multilevel_label" : "Multilevel precondition",
+   "poll_sensors_helper" : "Poll sensors interval (in seconds) when light was triggered",
+   "poll_sensors_label" : "Poll interval",
    "preconditions_helper" : "Multiple checks can be added to check preconditions before triggering. Will only trigger if all conditions are met.",
    "preconditions_label" : "Preconditions to check before triggering",
    "recheck_preconditions_helper" : "Check preconditions regularly (Enable) or only once upon triggering the device (Disable)",
