@@ -3,20 +3,19 @@
    "category" : "complex_applications",
    "defaults" : {
       "description" : "__m_descr__",
-      "timeout" : 180,
-      "title" : "__m_title__",
-      "securitySensors": [],
-      "timeout": 60,
-      "lights": [],
-      "dimmer": {
-        "mode": "full"
+      "dimmer" : {
+         "mode" : "full"
       },
-      "preconditions": {
-        "recheck": false,
-        "binary": [],
-        "multilevel": [],
-        "time": []
-      }
+      "lights" : [],
+      "preconditions" : {
+         "binary" : [],
+         "multilevel" : [],
+         "recheck" : false,
+         "time" : []
+      },
+      "securitySensors" : [],
+      "timeout" : 60,
+      "title" : "__m_title__"
    },
    "dependencies" : [
       "BaseModule"
@@ -105,6 +104,11 @@
             },
             "label" : "__lights_label__",
             "order" : 2
+         },
+         "pollSensors" : {
+            "helper" : "__poll_sensors_helper__",
+            "label" : "__poll_sensors_label__",
+            "order" : 5
          },
          "preconditions" : {
             "fields" : {
@@ -220,11 +224,6 @@
             "label" : "__security_sensors_label__",
             "order" : 1
          },
-         "pollSensors": {
-             "helper" : "__poll_sensors_helper__",
-             "label" : "__poll_sensors_label__",
-             "order" : 5
-         },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
@@ -308,6 +307,9 @@
             "minItems" : 1,
             "type" : "array",
             "uniqueItems" : true
+         },
+         "pollSensors" : {
+            "type" : "integer"
          },
          "preconditions" : {
             "properties" : {
@@ -413,9 +415,6 @@
             "type" : "array",
             "uniqueItems" : true
          },
-         "pollSensors" : {
-             "type" : "integer"
-          },
          "timeout" : {
             "minimum" : 1,
             "required" : true,
@@ -426,5 +425,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.06
+   "version" : "1.07"
 }

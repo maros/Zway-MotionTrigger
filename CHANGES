@@ -1,3 +1,12 @@
+1.07 2016 Jun 01, Wed
+    * Update documentation
+    * Improve texts
+    * Update module title
+    * Set defaults
+    * Fix naming conflict
+    * Round luminosity
+    * Optionally poll sensors
+
 1.06 2016 Apr 20, Wed
     * More verbose logging
     * Fix time fields in module.json
