@@ -63,6 +63,10 @@ Sets how the dimmer level sould be determined.
 * Code: Executes a user-provided JavaScript code to calculate the dimmer level
 * Dynamic: Calculate dimmer based on luminosity
 
+## pollSensors
+
+Poll sensors intervall while triggered. Will not poll if empty or 0.
+
 # Virtual Devices
 
 This module creates a virtual binary switch device to turn on/off the trigger.
