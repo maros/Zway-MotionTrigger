@@ -38,7 +38,7 @@ Time in HH:MM format
 
 ## preconditions.binary.device, preconditions.multilevel.device
 
-Multiple devices to check. Must be either a binar or multilevel sensor.
+Multiple devices to check. Must be either a binary or multilevel sensor.
 
 ## preconditions.multilevel.device
 
@@ -56,7 +56,7 @@ to be triggered
 
 ## dimmer.mode, dimmer.static, dimmer.code, dimmer.dynamic
 
-Sets how the dimmer level sould be determined. 
+Sets how the dimmer level should be determined. 
 
 * Full: Sets dimmers to 100% (default)
 * Static: Sets the dimmer level to a user-defined value
@@ -65,7 +65,7 @@ Sets how the dimmer level sould be determined.
 
 ## pollSensors
 
-Poll sensors intervall while triggered. Will not poll if empty or 0.
+Poll sensors interval while triggered. Will not poll if empty or 0.
 
 # Virtual Devices
 
@@ -75,7 +75,6 @@ metrics:level stores the mode of the trigger, and metrics:triggered weather
 a device is currently triggered or not.
 
 # Events
-
 
 ## light.on, light.off
 
