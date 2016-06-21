@@ -197,7 +197,8 @@ MotionTrigger.prototype.handleLight = function(vDev) {
 MotionTrigger.prototype.handleEvent = function(event) {
     var self = this;
     
-    if (event.id === self.id) {
+    if (event.id === self.id
+        || event.location !== self.vDev.get('metrics:location')) {
         return;
     }
     
