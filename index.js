@@ -67,7 +67,7 @@ MotionTrigger.prototype.init = function (config) {
                 }
             } else if (command === 'on') {
                 // Check the condition and trigger immediately
-                self.handleChange('on');
+                self.handleChange('on',this);
             }
         },
         moduleId: self.id
@@ -196,14 +196,15 @@ MotionTrigger.prototype.handleLight = function(vDev) {
 
 MotionTrigger.prototype.handleEvent = function(event) {
     var self = this;
-    
+    console.logJS(event);
     if (event.id === self.id
-        || event.location !== self.vDev.get('metrics:location')) {
+        || event.vDev.get('metrics:location') !== self.vDev.get('metrics:location')) {
         return;
     }
     
+    self.log("Handle event from "+event.vDev.id);
     setTimeout(
-        _.bind(self.handleChange,self,'on'),
+        _.bind(self.handleChange,self,'on',event.vDev),
         500
     );
 };
@@ -211,6 +212,7 @@ MotionTrigger.prototype.handleEvent = function(event) {
 MotionTrigger.prototype.handleSensor = function(vDev) {
     var self = this;
     
+    self.log("Handle sensor update from "+vDev.id);
     self.handleChange(vDev.get('metrics:level'),vDev);
 };
 
@@ -486,9 +488,8 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     
     self.controller.emit('light.'+(mode ? 'on':'off'),{ 
         id:         self.id,
-        title:      self.vDev.get('metrics:title'),
-        location:   self.vDev.get('metrics:location'),
-        mode:       mode
+        mode:       mode,
+        vDev:       vDev
     });
     
     // Real turning off
