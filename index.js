@@ -489,7 +489,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     self.controller.emit('light.'+(mode ? 'on':'off'),{ 
         id:         self.id,
         mode:       mode,
-        vDev:       vDev
+        vDev:       self.dvDev
     });
     
     // Real turning off
@@ -525,7 +525,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
 MotionTrigger.prototype.resetInterval = function() {
     var self = this;
     
-    if (typeof(self.checkInterval) === 'undefined') {
+    if (typeof(self.checkInterval) !== 'undefined') {
         clearInterval(self.checkInterval);
         self.checkInterval = undefined;
     }
