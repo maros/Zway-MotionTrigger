@@ -197,10 +197,11 @@ MotionTrigger.prototype.handleLight = function(vDev) {
 MotionTrigger.prototype.handleEvent = function(event) {
     var self = this;
     console.logJS(event);
-    if (event.id === self.id
-        || event.vDev.get('metrics:location') !== self.vDev.get('metrics:location')) {
+    if (event.id === self.id)
         return;
-    }
+    if (typeof(event.vDev) !== 'undefined'
+        && event.vDev.get('metrics:location') !== self.vDev.get('metrics:location'))
+        return;
     
     self.log("Handle event from "+event.vDev.id);
     setTimeout(
@@ -489,7 +490,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
     self.controller.emit('light.'+(mode ? 'on':'off'),{ 
         id:         self.id,
         mode:       mode,
-        vDev:       self.dvDev
+        vDev:       self.vDev
     });
     
     // Real turning off
