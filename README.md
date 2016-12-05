@@ -1,21 +1,21 @@
 # Zway-MotionTrigger
 
-Trigger switches based on security sensors like motion or door sensors if 
-certain preconditions are met (eg. luminosity below a certain level). Lets you 
-specify  multiple devices to trigger and check, a delay for turning off lights 
-and multiple preconditions to check. This module will ensure that devices are 
+Trigger switches based on security sensors like motion or door sensors if
+certain preconditions are met (eg. luminosity below a certain level). Lets you
+specify  multiple devices to trigger and check, a delay for turning off lights
+and multiple preconditions to check. This module will ensure that devices are
 not triggered if any of the selected devices is already turned on.
 
 # Configuration
 
 ## lights
 
-Multiple devices that should be triggered. Trigger will not be fired if any 
+Multiple devices that should be triggered. Trigger will not be fired if any
 of these devices is already turned on.
 
 ## securitySensors
 
-Security sensors that trigger lights. It is sufficient for one security 
+Security sensors that trigger lights. It is sufficient for one security
 sensor to be triggered.
 
 ## timeout
@@ -23,17 +23,17 @@ sensor to be triggered.
 Trigger timeout duration after the last security sensor has been untripped.
 (in seconds)
 
-## preconditions
+## preconditionsÍ
 
-Multiple optional conditions to check before a switch will be triggered. 
-Luminosity sensors, and the Astronomy module from 
-https://github.com/maros/Zway-Astronomy are particularly well suited to 
+Multiple optional conditions to check before a switch will be triggered.
+Luminosity sensors, and the Astronomy module from
+https://github.com/maros/Zway-Astronomy are particularly well suited to
 be included in such condition checks. Can also to prevent triggering lights
 if any other light is already switched on.
 
 ## preconditions.time.timeFrom, preconditions.time.timeTo, preconditions.time.dayofweek
 
-Multiple time periods when the motion trigger should be active. 
+Multiple time periods when the motion trigger should be active.
 Time in HH:MM format
 
 ## preconditions.binary.device, preconditions.multilevel.device
@@ -56,7 +56,7 @@ to be triggered
 
 ## dimmer.mode, dimmer.static, dimmer.code, dimmer.dynamic
 
-Sets how the dimmer level should be determined. 
+Sets how the dimmer level should be determined.
 
 * Full: Sets dimmers to 100% (default)
 * Static: Sets the dimmer level to a user-defined value
@@ -78,7 +78,7 @@ a device is currently triggered or not.
 
 ## light.on, light.off
 
-Emits an event whenever a light is switched on or off. ie. Allows other 
+Emits an event whenever a light is switched on or off. ie. Allows other
 motion triggers, to act immediately after one trigger has been switched
 off.
 
@@ -87,11 +87,11 @@ off.
 Install the BaseModule from https://github.com/maros/Zway-BaseModule first
 
 The prefered way of installing this module is via the "Zwave.me App Store"
-available in 2.2.0 and higher. For stable module releases no access token is 
-required. If you want to test the latest pre-releases use 'k1_beta' as 
+available in 2.2.0 and higher. For stable module releases no access token is
+required. If you want to test the latest pre-releases use 'k1_beta' as
 app store access token.
 
-For developers and users of older Zway versions installation via git is 
+For developers and users of older Zway versions installation via git is
 recommended.
 
 ```shell
@@ -115,7 +115,7 @@ git checkout -b master --track origin/master
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or any 
+the Free Software Foundation, either version 3 of the License, or any
 later version.
 
 This program is distributed in the hope that it will be useful,

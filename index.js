@@ -14,7 +14,7 @@ Description:
 function MotionTrigger (id, controller) {
     // Call superconstructor first (AutomationModule)
     MotionTrigger.super_.call(this, id, controller);
-    
+
     this.timeout        = undefined;
     this.callbackEvent  = undefined;
     this.callbackSensor = undefined;
@@ -33,7 +33,7 @@ _module = MotionTrigger;
 MotionTrigger.prototype.init = function (config) {
     MotionTrigger.super_.prototype.init.call(this, config);
     var self = this;
-    
+
     // Create vdev
     self.vDev = this.controller.devices.create({
         deviceId: "MotionTrigger_" + self.id,
@@ -72,7 +72,7 @@ MotionTrigger.prototype.init = function (config) {
         },
         moduleId: self.id
     });
-    
+
     self.callbackSensor = _.bind(self.handleSensor,self);
     self.callbackEvent  = _.bind(self.handleEvent,self);
     self.callbackLight  = _.bind(self.handleLight,self);
@@ -106,11 +106,11 @@ MotionTrigger.prototype.initCallback = function() {
         self.log('Triggered');
         self.handleChange('on');
     }
-    
+
     self.processDeviceList(self.config.securitySensors,function(deviceObject) {
         deviceObject.on('modify:metrics:level',self.callbackSensor);
     });
-    
+
     self.processDeviceList(self.config.lights,function(deviceObject) {
         deviceObject.on('modify:metrics:level',self.callbackLight);
     });
@@ -118,17 +118,17 @@ MotionTrigger.prototype.initCallback = function() {
 
 MotionTrigger.prototype.stop = function() {
     var self = this;
-    
+
     self.processDeviceList(self.config.securitySensors,function(deviceObject) {
         deviceObject.off('modify:metrics:level',self.callbackSensor);
     });
-    
+
     self.processDeviceList(self.config.lights,function(deviceObject) {
         deviceObject.off('modify:metrics:level',self.callbackLight);
     });
-    
+
     self.controller.off('light.off',self.callbackEvent);
-    
+
     if (typeof(self.pollInterval) !== 'undefined') {
         clearInterval(self.pollInterval);
         self.pollInterval   = undefined;
@@ -138,15 +138,15 @@ MotionTrigger.prototype.stop = function() {
     self.callbackEvent  = undefined;
     self.callbackSensor = undefined;
     self.callbackLight  = undefined;
-    
+
     self.resetInterval();
     self.resetTimeout();
-    
+
     if (self.vDev) {
         self.controller.devices.remove(self.vDev.id);
         self.vDev = undefined;
     }
-    
+
     MotionTrigger.super_.prototype.stop.call(this);
 };
 
@@ -156,13 +156,13 @@ MotionTrigger.prototype.stop = function() {
 
 MotionTrigger.prototype.handlePoll = function() {
     var self = this;
-    
+
     // Check trigger device on, triggered
     if (self.vDev.get('metrics:level') !== 'on'
         || self.vDev.get('metrics:triggered') === false) {
         return;
     }
-    
+
     self.processDeviceList(self.config.securitySensors,function(deviceObject) {
         deviceObject.performCommand('update');
     });
@@ -170,25 +170,25 @@ MotionTrigger.prototype.handlePoll = function() {
 
 MotionTrigger.prototype.handleLight = function(vDev) {
     var self = this;
-    
+
     var triggered = self.vDev.get('metrics:triggered');
     if (!triggered) {
         return;
     }
-    
+
     if (typeof(self.lock) !== 'undefined'
         && self.lock.cleared === false) {
         self.log('Has lock');
         return;
     }
-    
+
     var lightsOn = false;
     self.processDeviceList(self.config.lights,function(deviceObject) {
         if (deviceObject.get('metrics:level') === 'on') {
             lightsOn = true;
         }
     });
-    
+
     if (lightsOn === false) {
         self.switchDevice(false);
     }
@@ -202,7 +202,7 @@ MotionTrigger.prototype.handleEvent = function(event) {
     if (typeof(event.vDev) !== 'undefined'
         && event.vDev.get('metrics:location') !== self.vDev.get('metrics:location'))
         return;
-    
+
     self.log("Handle event from "+event.vDev.id);
     setTimeout(
         _.bind(self.handleChange,self,'on',event.vDev),
@@ -212,14 +212,14 @@ MotionTrigger.prototype.handleEvent = function(event) {
 
 MotionTrigger.prototype.handleSensor = function(vDev) {
     var self = this;
-    
+
     self.log("Handle sensor update from "+vDev.id);
     self.handleChange(vDev.get('metrics:level'),vDev);
 };
 
 MotionTrigger.prototype.handleChange = function(mode,vDev) {
     var self = this;
-    
+
     // Check trigger device on
     if (self.vDev.get('metrics:level') !== 'on') {
         self.log('Ignoring change to '+mode+': Controller off');
@@ -231,35 +231,35 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
     } else {
         self.log('Handle change to '+mode);
     }
-    
+
     // Check security device status
     var sensors     = self.checkDevice(self.config.securitySensors);
     var triggered   = self.vDev.get('metrics:triggered');
-    
+
     // Triggered sensor
-    if (sensors === true 
+    if (sensors === true
         && mode === 'on') {
         // Check trigger lights on
         var lights          = self.checkDevice(self.config.lights);
         // Check extra sensors
         var precondition    = self.checkPrecondition();
-        
+
         self.log('Triggered motion sensor (preconditions: '+precondition+', lights: '+lights+', triggered: '+triggered+')');
-        
+
         // Trigger light
-        if (precondition === true 
+        if (precondition === true
             && lights === false) {
             self.resetTimeout();
             self.switchDevice(true);
         // Retrigger light
-        } else if (triggered === true && 
+        } else if (triggered === true &&
             (! self.config.preconditions.recheck || precondition === true)) {
             // Reset timeouts
             self.resetTimeout();
             self.vDev.set("metrics:icon", self.imagePath+'/icon_triggered.png');
         }
     // Untriggered sensor
-    } else if (sensors === false 
+    } else if (sensors === false
         && mode === 'off'
         && triggered === true
         && typeof(self.timeout) === 'undefined') {
@@ -271,14 +271,14 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
 
 MotionTrigger.prototype.handleCheck = function() {
     var self = this;
-    
+
     // Check trigger device on, triggered and no timeout
     if (self.vDev.get('metrics:level') !== 'on'
         || self.vDev.get('metrics:triggered') === false
         || typeof(self.timeout) !== 'undefined') {
         return;
     }
-    
+
     var check = self.checkPrecondition();
     if (! check) {
         self.untriggerDevice();
@@ -287,10 +287,10 @@ MotionTrigger.prototype.handleCheck = function() {
 
 MotionTrigger.prototype.untriggerDevice = function() {
     var self = this;
-    
+
     self.resetInterval();
     self.resetTimeout();
-    
+
     if (self.config.timeout > 0) {
         self.log('Untriggered security sensor. Starting timeout');
         var timeoutRel = parseInt(self.config.timeout,10) * 1000;
@@ -310,12 +310,12 @@ MotionTrigger.prototype.untriggerDevice = function() {
 // Helper method to check any device in list of devices if on
 MotionTrigger.prototype.checkDevice = function(devices) {
     var self = this;
-    
+
     var status = false;
     self.processDeviceList(devices,function(deviceObject) {
         var type    = deviceObject.get('deviceType') ;
         var level   = deviceObject.get("metrics:level");
-        
+
         self.log('Device '+deviceObject.get("metrics:title")+' is '+level);
         if (type === 'switchBinary'
             || type === 'sensorBinary') {
@@ -332,20 +332,20 @@ MotionTrigger.prototype.checkDevice = function(devices) {
             return;
         }
     });
-    
+
     return status;
 };
 
 // Helper to check preconditions
 MotionTrigger.prototype.checkPrecondition = function() {
     var self = this;
-    
+
     self.log('Calculating precondition');
-    
+
     var dateNow         = new Date();
     var dayofweekNow    = dateNow.getDay().toString();
     var condition       = true;
-    
+
     // Check time
     if (condition === true
         && self.config.preconditions.time.length > 0) {
@@ -354,25 +354,25 @@ MotionTrigger.prototype.checkPrecondition = function() {
             if (timeCondition === true) {
                 return;
             }
-            
+
             // Check day of week if set
-            if (typeof(time.dayofweek) === 'object' 
+            if (typeof(time.dayofweek) === 'object'
                 && time.dayofweek.length > 0
                 && _.indexOf(time.dayofweek, dayofweekNow.toString()) === -1) {
                 self.log('Day of week does not match');
                 return;
             }
-            
+
             if (! self.checkPeriod(time.timeFrom,time.timeTo)) {
                 self.log('Time does not match');
                 return;
             }
-            
+
             timeCondition = true;
         });
         condition = timeCondition;
     }
-    
+
     // Check binary
     _.each(self.config.preconditions.binary,function(check) {
         if (condition) {
@@ -388,7 +388,7 @@ MotionTrigger.prototype.checkPrecondition = function() {
             }
         }
     });
-    
+
     // Check multilevel
     _.each(self.config.preconditions.multilevel,function(check) {
         if (condition) {
@@ -404,20 +404,20 @@ MotionTrigger.prototype.checkPrecondition = function() {
             }
         }
     });
-    
+
     return condition;
 };
 
 MotionTrigger.prototype.switchDevice = function(mode) {
     var self = this;
-    
+
     var level = self.vDev.get('metrics:level');
     var dimmerLevel = 99;
     if (level === 'on' && mode === true) {
         self.vDev.set("metrics:icon", self.imagePath+'/icon_triggered.png');
-        
+
         self.lock = new Timeout(self,function() {},1000*5);
-        
+
         if (self.config.preconditions.recheck) {
             self.resetInterval();
             self.checkInterval = setInterval(
@@ -425,7 +425,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                 (1000 * 30)
             );
         }
-        
+
         switch (self.config.dimmer.mode) {
             case 'static':
                 dimmerLevel = parseInt(self.config.dimmer.static,10);
@@ -446,18 +446,18 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                 }
                 var luminosityLevel     = luminosityDevice.get('metrics:level');
                 var luminosityWindow    = (dimmerConfig.luminosityMax - dimmerConfig.luminosityMin);
-                
+
                 if (luminosityLevel < dimmerConfig.luminosityMin)
                     luminosityLevel = dimmerConfig.luminosityMin;
                 if (luminosityLevel > dimmerConfig.luminosityMax)
                     luminosityLevel = dimmerConfig.luminosityMax;
-                
+
                 var luminosityPercent   = Math.round(((luminosity-dimmerConfig.luminosityMin)/luminosityWindow)*100);
                 dimmerLevel             = ((1/100)*((luminosityPercent*dimmerConfig.levelMax)+(100*dimmerConfig.levelMin)-(luminosityPercent*dimmerConfig.levelMax)));
-                
+
                 break;
         }
-        
+
         if (dimmerLevel > 99) {
             dimmerLevel = 99;
         }
@@ -465,12 +465,12 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         self.resetInterval();
         self.vDev.set("metrics:icon", self.imagePath+'/icon_'+level+".png");
     }
-    
+
     self.resetTimeout();
     self.vDev.set("metrics:triggered",mode);
-    
+
     self.log('Turning '+(mode ? 'on':'off'));
-    
+
     // Fake switching
     self.processDeviceList(self.config.lights,function(deviceObject) {
         var targetLevel;
@@ -486,18 +486,18 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         deviceObject.set('metrics:level',targetLevel,{ silent: true, setOnly: true });
         deviceObject.set('metrics:auto',mode,{ silent: true, setOnly: true });
     });
-    
-    self.controller.emit('light.'+(mode ? 'on':'off'),{ 
+
+    self.controller.emit('light.'+(mode ? 'on':'off'),{
         id:         self.id,
         mode:       mode,
         vDev:       self.vDev
     });
-    
+
     // Real turning off
     self.processDeviceList(self.config.lights,function(deviceObject) {
         var level = deviceObject.get('metrics:level');
         var targetLevel;
-        
+
         if (deviceObject.get('deviceType') === 'switchBinary') {
             targetLevel = (mode) ? 'on':'off';
             if (level === targetLevel) {
@@ -525,7 +525,7 @@ MotionTrigger.prototype.switchDevice = function(mode) {
 // Reset interval helper
 MotionTrigger.prototype.resetInterval = function() {
     var self = this;
-    
+
     if (typeof(self.checkInterval) !== 'undefined') {
         clearInterval(self.checkInterval);
         self.checkInterval = undefined;
@@ -535,7 +535,7 @@ MotionTrigger.prototype.resetInterval = function() {
 // Reset timeout helper
 MotionTrigger.prototype.resetTimeout = function() {
     var self = this;
-    
+
     if (typeof(self.timeout) !== 'undefined') {
         clearTimeout(self.timeout);
         self.timeout = undefined;
