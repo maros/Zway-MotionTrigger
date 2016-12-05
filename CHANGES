@@ -1,3 +1,8 @@
+1.08 2016 Dec 05, Mon
+    * Fix events
+    * Always add originating device to events
+    * Only trigger event if in the same zone
+
 1.07 2016 Jun 01, Wed
     * Update documentation
     * Improve texts
