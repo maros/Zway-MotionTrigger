@@ -39,7 +39,7 @@ MotionTrigger.prototype.init = function (config) {
         deviceId: "MotionTrigger_" + self.id,
         defaults: {
             metrics: {
-                level: 'off',
+                level: 'on',
                 title: self.langFile.m_title,
                 icon: self.imagePath+'/icon_off.png',
                 triggered: false,
