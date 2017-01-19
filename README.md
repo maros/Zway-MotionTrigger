@@ -16,7 +16,7 @@ of these devices is already turned on.
 ## securitySensors
 
 Security sensors that trigger lights. It is sufficient for one security
-sensor to be triggered.
+sensor to be triggered for the lights to be turned on.
 
 ## timeout
 
@@ -28,8 +28,8 @@ Trigger timeout duration after the last security sensor has been untripped.
 Multiple optional conditions to check before a switch will be triggered.
 Luminosity sensors, and the Astronomy module from
 https://github.com/maros/Zway-Astronomy are particularly well suited to
-be included in such condition checks. Can also to prevent triggering lights
-if any other light is already switched on.
+be included in such condition checks. Can also be used to prevent triggering
+lights if any other light is already switched on.
 
 ## preconditions.time.timeFrom, preconditions.time.timeTo, preconditions.time.dayofweek
 
@@ -38,7 +38,7 @@ Time in HH:MM format
 
 ## preconditions.binary.device, preconditions.multilevel.device
 
-Multiple devices to check. Must be either a binary or multilevel sensor.
+Multiple devices to check. Must be either a binary or a multilevel sensor.
 
 ## preconditions.multilevel.device
 
@@ -50,7 +50,7 @@ Values to be used for the precondition checks
 
 ## preconditions.recheck
 
-If this option is checked, all preconditions will be rechecked regularly.
+If this option is enabled, all preconditions will be rechecked regularly.
 Otherwise preconditions will be only checked once when the light is about
 to be triggered
 
