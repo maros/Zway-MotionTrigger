@@ -47,7 +47,7 @@ MotionTrigger.prototype.init = function (config) {
             }
         },
         overlay: {
-            probeType: 'controller_motiontrigger',
+            probeType: '',
             deviceType: 'switchBinary'
         },
         handler: function(command, args) {
