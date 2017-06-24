@@ -1,3 +1,9 @@
+1.09 2017 Jun 24, Sat
+    * Optional delay timeout
+    * Update module documentation
+    * Update copyright
+    * Default on on first install
+
 1.08 2016 Dec 05, Mon
     * Fix events
     * Always add originating device to events

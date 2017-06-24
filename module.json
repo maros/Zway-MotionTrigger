@@ -26,6 +26,11 @@
    "moduleName" : "MotionTrigger",
    "options" : {
       "fields" : {
+         "delay" : {
+            "helper" : "__delay_helper__",
+            "label" : "__delay_label__",
+            "order" : 6
+         },
          "dimmer" : {
             "fields" : {
                "code" : {
@@ -228,11 +233,6 @@
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
             "order" : 4
-         },
-         "delay" : {
-            "helper" : "__delay_helper__",
-            "label" : "__delay_label__",
-            "order" : 6
          }
       }
    },
@@ -242,6 +242,9 @@
    },
    "schema" : {
       "properties" : {
+         "delay" : {
+            "type" : "integer"
+         },
          "dimmer" : {
             "properties" : {
                "code" : {
@@ -314,9 +317,6 @@
             "uniqueItems" : true
          },
          "pollSensors" : {
-            "type" : "integer"
-         },
-         "delay" : {
             "type" : "integer"
          },
          "preconditions" : {
@@ -433,5 +433,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : "1.08"
+   "version" : "1.09"
 }
