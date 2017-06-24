@@ -90,7 +90,7 @@
                   "order" : 3
                }
             },
-            "order" : 6,
+            "order" : 7,
             "type" : "object"
          },
          "lights" : {
@@ -217,7 +217,7 @@
                "item" : {
                   "datasource" : "namespaces",
                   "field" : "devices",
-                  "optionLabels" : "namespaces:devices_sensorBinary:deviceName",
+                  "optionLabels" : "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName",
                   "type" : "select"
                }
             },
@@ -228,6 +228,11 @@
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
             "order" : 4
+         },
+         "delay" : {
+            "helper" : "__delay_helper__",
+            "label" : "__delay_label__",
+            "order" : 6
          }
       }
    },
@@ -309,6 +314,9 @@
             "uniqueItems" : true
          },
          "pollSensors" : {
+            "type" : "integer"
+         },
+         "delay" : {
             "type" : "integer"
          },
          "preconditions" : {
@@ -407,7 +415,7 @@
          "securitySensors" : {
             "items" : {
                "datasource" : "namespaces",
-               "enum" : "namespaces:devices_sensorBinary:deviceId",
+               "enum" : "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
                "field" : "enum",
                "required" : true
             },

@@ -9,6 +9,8 @@
    "dayofweek_5" : "Friday",
    "dayofweek_6" : "Saturday",
    "dayofweek_label" : "Day of week",
+   "delay_helper" : "Optional delay of triggering lights (in seconds) after movement was detected",
+   "delay_label" : "Delay time",
    "dimmer_code_helper" : "JavaScript code that returns a numeric dimmer level",
    "dimmer_code_label" : "Dimmer code",
    "dimmer_dynamic_label" : "Dynamic calculation",

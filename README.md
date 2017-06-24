@@ -67,6 +67,10 @@ Sets how the dimmer level should be determined.
 
 Poll sensors interval while triggered. Will not poll if empty or 0.
 
+## delay
+
+Optional delay to trigger lights.
+
 # Virtual Devices
 
 This module creates a virtual binary switch device to turn on/off the trigger.

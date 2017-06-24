@@ -15,7 +15,8 @@ function MotionTrigger (id, controller) {
     // Call superconstructor first (AutomationModule)
     MotionTrigger.super_.call(this, id, controller);
 
-    this.timeout        = undefined;
+    this.offTimeout     = undefined;
+    this.delayTimeout   = undefined;
     this.callbackEvent  = undefined;
     this.callbackSensor = undefined;
     this.checkInterval  = undefined;
@@ -43,7 +44,8 @@ MotionTrigger.prototype.init = function (config) {
                 title: self.langFile.m_title,
                 icon: self.imagePath+'/icon_off.png',
                 triggered: false,
-                timeout: null
+                offtimeout: null,
+                delaytimeout: null
             }
         },
         overlay: {
@@ -59,7 +61,7 @@ MotionTrigger.prototype.init = function (config) {
             this.set("metrics:icon", self.imagePath+'/icon_'+command+".png");
             if (command === 'off') {
                 self.resetInterval();
-                self.resetTimeout();
+                self.resetOffTimeout();
                 // Turn off if triggered
                 if (this.get("metrics:triggered")) {
                     self.log('Switching off all triggered devices');
@@ -90,16 +92,28 @@ MotionTrigger.prototype.initCallback = function() {
     var self = this;
 
     // Correctly init after restart
-    var timeoutAbs = self.vDev.get('metrics:timeout');
-    if (typeof(timeoutAbs) === 'number') {
-        self.log('Restart timeout');
-        var timeoutRel = timeoutAbs - new Date().getTime();
-        if (timeoutRel <= 0) {
+    var offtimeout = self.vDev.get('metrics:offtimeout');
+    var delaytimeout = self.vDev.get('metrics:delaytimeout');
+    if (typeof(offtimeout) === 'number') {
+        self.log('Restart off timeout');
+        offtimeout -= new Date().getTime();
+        if (offtimeout <= 0) {
             self.switchDevice(false);
         } else {
-            self.timeout = setTimeout(
+            self.offTimeout = setTimeout(
                 _.bind(self.switchDevice,self,false),
-                timeoutRel
+                offtimeout
+            );
+        }
+    } else if (typeof(delaytimeout) === 'number') {
+        self.log('Restart delay timeout');
+        delaytimeout -= new Date().getTime();
+        if (delaytimeout <= 0) {
+            self.switchDevice(true);
+        } else {
+            self.delayTimeout = setTimeout(
+                _.bind(self.switchDevice,self,true),
+                delaytimeout
             );
         }
     } else if (self.vDev.get('metrics:triggered')) {
@@ -140,7 +154,8 @@ MotionTrigger.prototype.stop = function() {
     self.callbackLight  = undefined;
 
     self.resetInterval();
-    self.resetTimeout();
+    self.resetOffTimeout();
+    self.resetDelayTimeout();
 
     if (self.vDev) {
         self.controller.devices.remove(self.vDev.id);
@@ -196,17 +211,17 @@ MotionTrigger.prototype.handleLight = function(vDev) {
 
 MotionTrigger.prototype.handleEvent = function(event) {
     var self = this;
-    console.logJS(event);
     if (event.id === self.id)
         return;
-    if (typeof(event.vDev) !== 'undefined'
-        && event.vDev.get('metrics:location') !== self.vDev.get('metrics:location'))
+    if (typeof(event.vDev) === 'undefined')
+        return;
+    if (event.vDev.get('metrics:location') !== self.vDev.get('metrics:location'))
         return;
 
     self.log("Handle event from "+event.vDev.id);
     setTimeout(
         _.bind(self.handleChange,self,'on',event.vDev),
-        500
+        100
     );
 };
 
@@ -249,20 +264,34 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         // Trigger light
         if (precondition === true
             && lights === false) {
-            self.resetTimeout();
-            self.switchDevice(true);
+            self.resetOffTimeout();
+            if (self.config.delay
+                && parseInt(self.config.delay,10) > 0) {
+                if (typeof(self.delayTimeout) === 'undefined') {
+                    self.log('Delayed on');
+                    var delayRel = parseInt(self.config.delay,10) * 1000;
+                    var delayAbs = new Date().getTime() + delayRel;
+                    self.delayTimeout = setTimeout(
+                        _.bind(self.switchDevice,self,true),
+                        delayRel
+                    );
+                    self.vDev.set('metrics:delaytimeout',delayAbs);
+                }
+            } else {
+                self.switchDevice(true);
+            }
         // Retrigger light
         } else if (triggered === true &&
             (! self.config.preconditions.recheck || precondition === true)) {
             // Reset timeouts
-            self.resetTimeout();
+            self.resetOffTimeout();
             self.vDev.set("metrics:icon", self.imagePath+'/icon_triggered.png');
         }
     // Untriggered sensor
     } else if (sensors === false
         && mode === 'off'
         && triggered === true
-        && typeof(self.timeout) === 'undefined') {
+        && typeof(self.offTimeout) === 'undefined') {
         self.untriggerDevice();
     } else {
         self.log('Ignoring. Sensor: '+sensors+' Triggered: '+triggered+' Mode: '+mode);
@@ -275,7 +304,7 @@ MotionTrigger.prototype.handleCheck = function() {
     // Check trigger device on, triggered and no timeout
     if (self.vDev.get('metrics:level') !== 'on'
         || self.vDev.get('metrics:triggered') === false
-        || typeof(self.timeout) !== 'undefined') {
+        || typeof(self.offTimeout) !== 'undefined') {
         return;
     }
 
@@ -289,18 +318,19 @@ MotionTrigger.prototype.untriggerDevice = function() {
     var self = this;
 
     self.resetInterval();
-    self.resetTimeout();
+    self.resetOffTimeout();
+    self.resetDelayTimeout();
 
     if (self.config.timeout > 0) {
         self.log('Untriggered security sensor. Starting timeout');
         var timeoutRel = parseInt(self.config.timeout,10) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", self.imagePath+'/icon_timeout.png');
-        self.timeout = setTimeout(
+        self.offTimeout = setTimeout(
             _.bind(self.switchDevice,self,false),
             timeoutRel
         );
-        self.vDev.set('metrics:timeout',timeoutAbs);
+        self.vDev.set('metrics:offtimeout',timeoutAbs);
     } else {
         self.log('Untriggered security sensor. Turning off');
         self.switchDevice(false);
@@ -466,7 +496,8 @@ MotionTrigger.prototype.switchDevice = function(mode) {
         self.vDev.set("metrics:icon", self.imagePath+'/icon_'+level+".png");
     }
 
-    self.resetTimeout();
+    self.resetDelayTimeout();
+    self.resetOffTimeout();
     self.vDev.set("metrics:triggered",mode);
 
     self.log('Turning '+(mode ? 'on':'off'));
@@ -533,12 +564,23 @@ MotionTrigger.prototype.resetInterval = function() {
 };
 
 // Reset timeout helper
-MotionTrigger.prototype.resetTimeout = function() {
+MotionTrigger.prototype.resetOffTimeout = function() {
     var self = this;
 
-    if (typeof(self.timeout) !== 'undefined') {
-        clearTimeout(self.timeout);
-        self.timeout = undefined;
+    if (typeof(self.offTimeout) !== 'undefined') {
+        clearTimeout(self.offTimeout);
+        self.offTimeout = undefined;
     }
-    self.vDev.set('metrics:timeout',null);
+    self.vDev.set('metrics:offtimeout',null);
+};
+
+// Reset timeout helper
+MotionTrigger.prototype.resetDelayTimeout = function() {
+    var self = this;
+
+    if (typeof(self.delayTimeout) !== 'undefined') {
+        clearTimeout(self.delayTimeout);
+        self.delayTimeout = undefined;
+    }
+    self.vDev.set('metrics:delaytimeout',null);
 };

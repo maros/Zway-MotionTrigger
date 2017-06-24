@@ -9,6 +9,8 @@
    "dayofweek_5" : "Freitag",
    "dayofweek_6" : "Samstag",
    "dayofweek_label" : "Wochentag",
+   "delay_helper" : "Optional verzögerung der Schaltung (in Sekunden) nachdem Bewegung gemeldet wurde",
+   "delay_label" : "Verzögerung",
    "dimmer_code_helper" : "JavaScript Code der ein Dimmer Leveler zurückgibt",
    "dimmer_code_label" : "Benutzerdefinerter Code",
    "dimmer_dynamic_label" : "Dynamische Berechnung",
