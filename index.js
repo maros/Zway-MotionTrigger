@@ -94,6 +94,7 @@ MotionTrigger.prototype.initCallback = function() {
     // Correctly init after restart
     var offtimeout = self.vDev.get('metrics:offtimeout');
     var delaytimeout = self.vDev.get('metrics:delaytimeout');
+
     if (typeof(offtimeout) === 'number') {
         self.log('Restart off timeout');
         offtimeout -= new Date().getTime();
@@ -186,27 +187,28 @@ MotionTrigger.prototype.handlePoll = function() {
 MotionTrigger.prototype.handleLight = function(vDev) {
     var self = this;
 
-    var triggered = self.vDev.get('metrics:triggered');
-    if (!triggered) {
+    // Nothing to do since at least one light is still active
+    if ( self.checkDevice(self.config.lights) ) {
         return;
     }
 
+    // Reset delay
+    self.resetDelayTimeout();
+
+    // No further processing if not triggered
+    if (! self.vDev.get('metrics:triggered')) {
+        return;
+    }
+
+    // Device locked
     if (typeof(self.lock) !== 'undefined'
         && self.lock.cleared === false) {
         self.log('Has lock');
         return;
     }
 
-    var lightsOn = false;
-    self.processDeviceList(self.config.lights,function(deviceObject) {
-        if (deviceObject.get('metrics:level') === 'on') {
-            lightsOn = true;
-        }
-    });
-
-    if (lightsOn === false) {
-        self.switchDevice(false);
-    }
+    // Turn off light
+    self.switchDevice(false);
 };
 
 MotionTrigger.prototype.handleEvent = function(event) {
@@ -219,6 +221,7 @@ MotionTrigger.prototype.handleEvent = function(event) {
         return;
 
     self.log("Handle event from "+event.vDev.id);
+    self.log(event);
     setTimeout(
         _.bind(self.handleChange,self,'on',event.vDev),
         100
@@ -265,10 +268,11 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         if (precondition === true
             && lights === false) {
             self.resetOffTimeout();
+            // Handle delayed trigger
             if (self.config.delay
                 && parseInt(self.config.delay,10) > 0) {
                 if (typeof(self.delayTimeout) === 'undefined') {
-                    self.log('Delayed on');
+                    self.log('Delayed tigger');
                     var delayRel = parseInt(self.config.delay,10) * 1000;
                     var delayAbs = new Date().getTime() + delayRel;
                     self.delayTimeout = setTimeout(
@@ -278,6 +282,7 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
                     self.vDev.set('metrics:delaytimeout',delayAbs);
                 }
             } else {
+                self.log('Immediate tigger');
                 self.switchDevice(true);
             }
         // Retrigger light
@@ -293,6 +298,11 @@ MotionTrigger.prototype.handleChange = function(mode,vDev) {
         && triggered === true
         && typeof(self.offTimeout) === 'undefined') {
         self.untriggerDevice();
+    // Stop delay after sensor was untriggered
+    } else if (sensors === false
+        && triggered === false
+        && mode === 'off') {
+        self.resetDelayTimeout();
     } else {
         self.log('Ignoring. Sensor: '+sensors+' Triggered: '+triggered+' Mode: '+mode);
     }
@@ -322,7 +332,7 @@ MotionTrigger.prototype.untriggerDevice = function() {
     self.resetDelayTimeout();
 
     if (self.config.timeout > 0) {
-        self.log('Untriggered security sensor. Starting timeout');
+        self.log('Untriggered sensor. Starting timeout');
         var timeoutRel = parseInt(self.config.timeout,10) * 1000;
         var timeoutAbs = new Date().getTime() + timeoutRel;
         self.vDev.set("metrics:icon", self.imagePath+'/icon_timeout.png');
@@ -332,7 +342,7 @@ MotionTrigger.prototype.untriggerDevice = function() {
         );
         self.vDev.set('metrics:offtimeout',timeoutAbs);
     } else {
-        self.log('Untriggered security sensor. Turning off');
+        self.log('Untriggered sensor. Turning off');
         self.switchDevice(false);
     }
 };
@@ -443,9 +453,11 @@ MotionTrigger.prototype.switchDevice = function(mode) {
 
     var level = self.vDev.get('metrics:level');
     var dimmerLevel = 99;
+
     if (level === 'on' && mode === true) {
         self.vDev.set("metrics:icon", self.imagePath+'/icon_triggered.png');
 
+        // Set 5 sec lock
         self.lock = new Timeout(self,function() {},1000*5);
 
         if (self.config.preconditions.recheck) {
@@ -574,7 +586,7 @@ MotionTrigger.prototype.resetOffTimeout = function() {
     self.vDev.set('metrics:offtimeout',null);
 };
 
-// Reset timeout helper
+// Reset delay helper
 MotionTrigger.prototype.resetDelayTimeout = function() {
     var self = this;
 
