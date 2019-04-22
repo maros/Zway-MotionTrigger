@@ -92,7 +92,7 @@ MotionTrigger.prototype.initCallback = function() {
     var self = this;
 
     // Correctly init after restart
-    var offtimeout = self.vDev.get('metrics:offtimeout');
+    var offtimeout = self.vDev.get('metrics:offTime');
     var delaytimeout = self.vDev.get('metrics:delaytimeout');
 
     if (typeof(offtimeout) === 'number') {
@@ -340,7 +340,7 @@ MotionTrigger.prototype.untriggerDevice = function() {
             _.bind(self.switchDevice,self,false),
             timeoutRel
         );
-        self.vDev.set('metrics:offtimeout',timeoutAbs);
+        self.vDev.set('metrics:offTime',timeoutAbs);
     } else {
         self.log('Untriggered sensor. Turning off');
         self.switchDevice(false);
@@ -583,7 +583,7 @@ MotionTrigger.prototype.resetOffTimeout = function() {
         clearTimeout(self.offTimeout);
         self.offTimeout = undefined;
     }
-    self.vDev.set('metrics:offtimeout',null);
+    self.vDev.set('metrics:offTime',null);
 };
 
 // Reset delay helper
