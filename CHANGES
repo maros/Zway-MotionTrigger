@@ -1,3 +1,7 @@
+1.10 2019 Apr 26, Fri
+    * Rename key to be in sync with other modules
+    * Reset delay if device is turned off
+
 1.09 2017 Jun 24, Sat
     * Optional delay timeout
     * Update module documentation
