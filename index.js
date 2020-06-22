@@ -495,7 +495,14 @@ MotionTrigger.prototype.switchDevice = function(mode) {
                     luminosityLevel = dimmerConfig.luminosityMax;
 
                 var luminosityPercent   = Math.round(((luminosity-dimmerConfig.luminosityMin)/luminosityWindow)*100);
-                dimmerLevel             = ((1/100)*((luminosityPercent*dimmerConfig.levelMax)+(100*dimmerConfig.levelMin)-(luminosityPercent*dimmerConfig.levelMax)));
+                dimmerLevel             = (
+                    (1/100)
+                    * (
+                        (luminosityPercent*dimmerConfig.levelMax)
+                        + (100*dimmerConfig.levelMin)
+                        - (luminosityPercent*dimmerConfig.levelMax)
+                    )
+                );
 
                 break;
         }
